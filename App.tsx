@@ -4,13 +4,15 @@ import { StyleSheet, Text, View } from "react-native";
 import { Map } from "./components/Map";
 import { MainStack } from "./routes/MainStack";
 import { NavigationContainer } from "@react-navigation/native";
+import { PaperProvider } from "react-native-paper";
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <MainStack />
-      {/* <Map /> */}
-      <StatusBar style="auto" />
-    </NavigationContainer>
+    <PaperProvider>
+      <NavigationContainer>
+        <MainStack />
+        <StatusBar style="auto" />
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
