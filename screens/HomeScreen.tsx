@@ -1,12 +1,15 @@
 import { useNavigation } from "@react-navigation/native";
 import { FlatList, StyleSheet, View } from "react-native";
-import { Button, Chip, FAB, useTheme } from "react-native-paper";
+import { Chip, FAB, useTheme } from "react-native-paper";
 import { Text } from "react-native-paper";
 import { categories } from "../constants/categories";
+import { CategoryCarousel } from "../components/CategoryCarousel";
+import { useState } from "react";
 
 export const HomeScreen = () => {
   const theme = useTheme();
   const navigation = useNavigation();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   return (
     <View
@@ -15,10 +18,10 @@ export const HomeScreen = () => {
       <View style={styles.header}>
         <FAB
           customSize={96}
-          icon="map"
+          icon="map-marker"
           mode="flat"
           size="large"
-          label="All places"
+          label="Find places"
           style={{ width: "100%" }}
           onPress={() => navigation.navigate("Map")}
         />
@@ -38,33 +41,18 @@ export const HomeScreen = () => {
           icon="plus"
           mode="flat"
           size="large"
-          label="Add place"
+          label="New place"
           style={{ flex: 1 }}
-          onPress={() => console.log("Pressed")}
+          onPress={() => navigation.navigate("New place")}
         />
       </View>
       <Text variant="headlineLarge" style={{ fontWeight: "bold" }}>
         Categories
       </Text>
-      <FlatList
-        style={{ maxHeight: 32 }}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.horizontalFlatlist}
-        renderItem={(data) => {
-          return (
-            <Chip
-              showSelectedOverlay={true}
-              showSelectedCheck
-              icon="information"
-              onPress={() => console.log("Pressed")}
-            >
-              {data.item}
-            </Chip>
-          );
-        }}
-        horizontal
-        data={categories}
-        keyExtractor={(item) => item}
+      <CategoryCarousel
+        categories={categories}
+        activeCategory={selectedCategory}
+        onChange={setSelectedCategory}
       />
     </View>
   );
@@ -79,10 +67,6 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   secondaryHeader: {
-    flexDirection: "row",
-    gap: 16,
-  },
-  horizontalFlatlist: {
     flexDirection: "row",
     gap: 16,
   },
