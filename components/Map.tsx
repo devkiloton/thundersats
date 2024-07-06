@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 export const Map = () => {
   return (
     <MapView
-      googleMapId={process.env.GOOGLE_MAP_ID}
+      googleMapId={process.env.EXPO_PUBLIC_GOOGLE_MAP_ID}
       provider={PROVIDER_GOOGLE}
       style={styles.map}
       // customMapStyle={}
