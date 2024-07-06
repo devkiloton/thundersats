@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "293897484225",
+    "project_id": "thundersats",
+    "storage_bucket": "thundersats.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293897484225:android:98200f997faef0fc0ea140",
+        "android_client_info": {
+          "package_name": "com.thundersats.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiM3TGgr29haERn41wcjcc1RPMGHWg3EY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

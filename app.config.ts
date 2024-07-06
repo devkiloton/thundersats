@@ -10,6 +10,8 @@ export default ({ config }: ConfigContext): Partial<ExpoConfig> => ({
     config: {
       googleMapsApiKey: process.env.GCP_MAPS_API_KEY,
     },
+    bundleIdentifier: "com.thundersats.app",
+    googleServicesFile: "./config/GoogleService-Info.plist",
   },
   android: {
     config: {
@@ -17,5 +19,7 @@ export default ({ config }: ConfigContext): Partial<ExpoConfig> => ({
         apiKey: process.env.GCP_MAPS_API_KEY,
       },
     },
+    package: "com.thundersats.app",
+    googleServicesFile: "./config/google-services.json",
   },
 });
