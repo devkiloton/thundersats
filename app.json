@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "kiloton",
     "name": "thundersats",
     "slug": "thundersats",
     "version": "1.0.0",
@@ -16,17 +17,32 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.thundersats.app"
+      "bundleIdentifier": "com.thundersats.app",
+      "googleServicesFile": "./config/GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.thundersats.app"
+      "package": "com.thundersats.app",
+      "googleServicesFile": "./config/google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e269846b-cd4f-4451-8f53-c15530bdbe2f"
+      }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Thundersats to use your location."
+        }
+      ]
+    ]
   }
 }
