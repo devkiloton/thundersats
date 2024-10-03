@@ -1,6 +1,41 @@
-import { Text } from "react-native-paper";
-import { Map } from "../components/Map";
+import { Button } from "react-native-paper";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { useNavigation } from "@react-navigation/native";
 
 export const WelcomeScreen = () => {
-  return <Text>Welcome to the app!</Text>;
+  // TODO: DEVELOPMENT PURPOSES ONLY, THIS ENTIRE COMPONENT SHOULD BE REFACTORED
+  const navigation = useNavigation();
+  const email = "xxxx@xxxx.xxx";
+  const password = "xxxxxx";
+
+  const createAccount = () => {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password);
+  };
+
+  const signIn = () => {
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
+  };
+
+  onAuthStateChanged(getAuth(), (user) => {
+    if (user) {
+      navigation.navigate("Home");
+    }
+  });
+
+  return (
+    <>
+      <Button onPress={() => createAccount()}>Create account</Button>
+      <Button onPress={() => signIn()}>Sign in</Button>
+    </>
+  );
 };
