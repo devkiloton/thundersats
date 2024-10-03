@@ -1,6 +1,8 @@
 export const firebaseConfig = {
   apiKey: "AIzaSyD67Tp7A6JXyF5FgIxM13q2sd29ykAWB7A",
   authDomain: "thundersats.firebaseapp.com",
+  databaseURL:
+    "https://thundersats-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "thundersats",
   storageBucket: "thundersats.appspot.com",
   messagingSenderId: "293897484225",
