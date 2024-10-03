@@ -6,12 +6,17 @@ export interface GooglePlaceDetails {
 
 export interface Result {
   formatted_phone_number: string | undefined;
-  formatted_address: string | undefined;
+  formatted_address: string;
   opening_hours: OpeningHours | undefined;
   photos: Photo[] | undefined;
   reviews: Review[] | undefined;
   user_ratings_total: number | undefined;
   website: string | undefined;
+  geometry: Geometry;
+}
+
+export interface Geometry {
+  location: { lat: number; lng: number };
 }
 
 export interface OpeningHours {
