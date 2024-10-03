@@ -8,10 +8,9 @@ import { NewPlaceScreen } from "../screens/NewPlaceScreen";
 const Stack = createStackNavigator();
 
 export const MainStack = () => {
-  const theme = useTheme();
   return (
     <Stack.Navigator>
-      {/* <Stack.Screen name="Welcome" component={WelcomeScreen} /> */}
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="New place" component={NewPlaceScreen} />
       <Stack.Screen name="Map" component={MapScreen} />
