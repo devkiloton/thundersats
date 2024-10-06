@@ -5,19 +5,17 @@ import { GooglePlaceDetails } from "../types/google-place-details";
 import { googleMapsClient } from "../clients/google-maps";
 
 type QueryPlaceResultsProps = {
-  selectedPlaceDetails: GooglePlaceDetails | null;
-  isPlaceSelected: boolean;
+  selectedPlace: GooglePlaceDetails | null;
   googleAutoCompletePlaces: Array<GoogleAutocompletePlace>;
   onPlaceSelected: (place: GoogleAutocompletePlace) => void;
 };
 
 export const QueryPlaceResults = ({
-  selectedPlaceDetails,
+  selectedPlace,
   onPlaceSelected,
-  isPlaceSelected,
   googleAutoCompletePlaces: placesFromAutocompleteGoogle,
 }: QueryPlaceResultsProps) => {
-  if (isPlaceSelected) {
+  if (selectedPlace === null) {
     return (
       <FlatList
         contentContainerStyle={{ gap: 8 }}
@@ -46,7 +44,7 @@ export const QueryPlaceResults = ({
           Gallery
         </Text>
         <FlatList
-          data={selectedPlaceDetails?.result?.photos}
+          data={selectedPlace?.result?.photos}
           horizontal
           showsHorizontalScrollIndicator={false}
           style={{ borderRadius: 16 }}
@@ -68,7 +66,7 @@ export const QueryPlaceResults = ({
           Reviews
         </Text>
         <FlatList
-          data={selectedPlaceDetails?.result.reviews}
+          data={selectedPlace?.result.reviews}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ gap: 8, marginBottom: 64 }}
           scrollEnabled={false}
