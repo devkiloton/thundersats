@@ -6,6 +6,7 @@ import { categories } from "../constants/categories";
 import { CategoryCarousel } from "../components/CategoryCarousel";
 import { useState } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { PlaceList } from "../components/PlaceList";
 
 export const HomeScreen = () => {
   const theme = useTheme();
@@ -55,6 +56,7 @@ export const HomeScreen = () => {
         activeCategory={selectedCategory}
         onChange={setSelectedCategory}
       />
+      <PlaceList />
     </View>
   );
 };
