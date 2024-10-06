@@ -12,9 +12,12 @@ import {
   GoogleAutocompleteSearch,
 } from "../types/google-autocomplete-search";
 import { QueryPlaceResults } from "../components/QueryPlaceResults";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { ParamListBase, useNavigation } from "@react-navigation/native";
 
 export const NewPlaceScreen = () => {
   const theme = useTheme();
+  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
   const [search, setSearch] = useState("");
   const [hasBitcoin, setHasBitcoin] = useState(false);
   const [hasLighting, setHasLighting] = useState(false);
@@ -27,7 +30,7 @@ export const NewPlaceScreen = () => {
     useState<GoogleAutocompletePlace | null>(null);
   const [selectedPlaceDetails, setSelectedPlaceDetails] =
     useState<GooglePlaceDetails | null>(null);
-  const [isPlaceSelected, setIsPlaceSelected] = useState(false);
+  const [isPlaceConfirmed, setIsPlaceConfirmed] = useState(false);
 
   useEffect(() => {
     onSearchChange(search);
@@ -56,7 +59,7 @@ export const NewPlaceScreen = () => {
 
   const onConfirmPlace = (isCorrect: boolean) => {
     if (isCorrect) {
-      setIsPlaceSelected(true);
+      setIsPlaceConfirmed(true);
       setGoogleAutocompletePlaces([]);
     } else {
       setSelectedPlace(null);
@@ -101,6 +104,7 @@ export const NewPlaceScreen = () => {
       phone: selectedPlaceDetails?.result.formatted_phone_number ?? null,
       website: selectedPlaceDetails?.result.website ?? null,
     });
+    navigation.goBack();
   };
 
   return (
@@ -119,7 +123,7 @@ export const NewPlaceScreen = () => {
         />
       ) : (
         <>
-          {isPlaceSelected && (
+          {isPlaceConfirmed && (
             <>
               <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
                 {selectedPlace.structured_formatting.main_text}
@@ -134,30 +138,33 @@ export const NewPlaceScreen = () => {
 
       {googleAutocompletePlaces.length > 0 ? (
         <>
-          <Text variant="titleLarge" style={{ alignSelf: "center" }}>
-            Is it the place?
-          </Text>
-          <View style={{ flexDirection: "row", gap: 8 }}>
-            <Button
-              style={{ flex: 1 }}
-              mode="outlined"
-              onPress={() => onConfirmPlace(false)}
-            >
-              No
-            </Button>
-            <Button
-              mode="contained"
-              style={{ flex: 1 }}
-              onPress={() => onConfirmPlace(true)}
-            >
-              Yes
-            </Button>
-          </View>
+          {selectedPlace !== null && (
+            <>
+              <Text variant="titleLarge" style={{ alignSelf: "center" }}>
+                Is it the place?
+              </Text>
+              <View style={{ flexDirection: "row", gap: 8 }}>
+                <Button
+                  style={{ flex: 1 }}
+                  mode="outlined"
+                  onPress={() => onConfirmPlace(false)}
+                >
+                  No
+                </Button>
+                <Button
+                  mode="contained"
+                  style={{ flex: 1 }}
+                  onPress={() => onConfirmPlace(true)}
+                >
+                  Yes
+                </Button>
+              </View>
+            </>
+          )}
           <QueryPlaceResults
             googleAutoCompletePlaces={googleAutocompletePlaces}
             onPlaceSelected={setSelectedPlace}
-            isPlaceSelected={isPlaceSelected}
-            selectedPlaceDetails={selectedPlaceDetails}
+            selectedPlace={selectedPlaceDetails}
           />
         </>
       ) : (
