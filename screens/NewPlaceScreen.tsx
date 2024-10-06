@@ -51,10 +51,11 @@ export const NewPlaceScreen = () => {
       input: data,
       locale: locale.languageTag.replace("-", "_"),
     });
-    searchResult.json().then((search: GoogleAutocompleteSearch) => {
-      console.log(search);
-      setGoogleAutocompletePlaces(search.predictions);
-    });
+    searchResult
+      .json()
+      .then((search: GoogleAutocompleteSearch) =>
+        setGoogleAutocompletePlaces(search.predictions)
+      );
   };
 
   const onConfirmPlace = (isCorrect: boolean) => {
