@@ -1,13 +1,37 @@
 import { getAuth } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+import {
+  get,
+  getDatabase,
+  limitToLast,
+  query,
+  ref,
+  set,
+  startAt,
+} from "firebase/database";
 
 export const firebaseClient = () => {
   return {
     places: {
       create: async (place: Place) => {
         const db = getDatabase();
-        const user = getAuth().currentUser;
-        set(ref(db, "places/" + user?.uid), place);
+        set(ref(db, "places/" + place.locationIdGoogle), place);
+      },
+      /**
+       * The start can be a number or uid
+       */
+      query: async ({
+        limit,
+        start,
+      }: {
+        limit: number;
+        start: number | string | null;
+      }) => {
+        const db = getDatabase();
+        const reference = ref(db, "places");
+        const snapshot = await get(
+          query(reference, limitToLast(limit), startAt(start))
+        );
+        return snapshot.val() as Record<string, Place>;
       },
     },
   };
