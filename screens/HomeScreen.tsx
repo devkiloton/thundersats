@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import { FlatList, StyleSheet, View } from "react-native";
-import { Chip, FAB, useTheme } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import { FAB, useTheme } from "react-native-paper";
 import { Text } from "react-native-paper";
 import { categories } from "../constants/categories";
 import { CategoryCarousel } from "../components/CategoryCarousel";
