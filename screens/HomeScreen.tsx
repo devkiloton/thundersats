@@ -1,14 +1,15 @@
-import { useNavigation } from "@react-navigation/native";
+import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import { FAB, useTheme } from "react-native-paper";
 import { Text } from "react-native-paper";
 import { categories } from "../constants/categories";
 import { CategoryCarousel } from "../components/CategoryCarousel";
 import { useState } from "react";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 export const HomeScreen = () => {
   const theme = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   return (

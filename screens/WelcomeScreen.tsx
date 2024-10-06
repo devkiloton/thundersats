@@ -5,11 +5,12 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { useNavigation } from "@react-navigation/native";
+import { ParamListBase, useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 export const WelcomeScreen = () => {
   // TODO: DEVELOPMENT PURPOSES ONLY, THIS ENTIRE COMPONENT SHOULD BE REFACTORED
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
   const email = "xxxx@xxxx.xxx";
   const password = "xxxxxx";
 
