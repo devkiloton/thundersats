@@ -4,13 +4,12 @@ import { FlatList } from "react-native";
 import { Card, Text, TouchableRipple } from "react-native-paper";
 
 export const PlaceList = () => {
-  const [page, setPage] = useState<string | null>(null);
   const [places, setPlaces] = useState<Place[] | null>([]);
   useEffect(() => {
     firebaseClient()
       .places.query({
         limit: 30,
-        start: page,
+        start: null,
       })
       .then((placesFirebase) => {
         setPlaces(Object.values(placesFirebase ?? {}));
