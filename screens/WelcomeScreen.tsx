@@ -7,12 +7,24 @@ import {
 } from "firebase/auth";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useEffect } from "react";
+import * as Location from "expo-location";
 
 export const WelcomeScreen = () => {
   // TODO: DEVELOPMENT PURPOSES ONLY, THIS ENTIRE COMPONENT SHOULD BE REFACTORED
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
   const email = "xxxx@xxxx.xxx";
   const password = "xxxxxx";
+
+  useEffect(() => {
+    Location.requestForegroundPermissionsAsync();
+  }, []);
+
+  onAuthStateChanged(getAuth(), (user) => {
+    if (user) {
+      navigation.navigate("Home");
+    }
+  });
 
   const createAccount = () => {
     const auth = getAuth();
@@ -26,12 +38,6 @@ export const WelcomeScreen = () => {
       const errorMessage = error.message;
     });
   };
-
-  onAuthStateChanged(getAuth(), (user) => {
-    if (user) {
-      navigation.navigate("Home");
-    }
-  });
 
   return (
     <>
