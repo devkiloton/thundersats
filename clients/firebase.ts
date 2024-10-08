@@ -1,4 +1,3 @@
-import { getAuth } from "firebase/auth";
 import {
   get,
   getDatabase,
@@ -49,6 +48,9 @@ export interface Place {
   ratingGoogle: number | undefined | null;
   phone: string | undefined | null;
   website: string | undefined | null;
+  rating: number | undefined | null;
+  priceLevel: number | undefined | null;
+  wheelchairAccessibleEntrance: boolean | undefined | null;
 }
 
 interface Location {

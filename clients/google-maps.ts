@@ -1,13 +1,23 @@
 export const googleMapsClient = {
   places: {
-    autocomplete: async (data: { input: string; locale: string }) => {
+    autocomplete: async (data: {
+      input: string;
+      locale: string;
+      coordinates: number[];
+    }) => {
       return fetch(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${data.input}&language=${data.locale}&types=establishment&key=${process.env.EXPO_PUBLIC_GCP_MAPS_API_KEY}`
+        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${
+          data.input
+        }&language=${data.locale}&${
+          data.coordinates.length == 2
+            ? `location=${data.coordinates[0]},${data.coordinates[1]}`
+            : "locationbias=ipbias"
+        }&types=establishment&key=${process.env.EXPO_PUBLIC_GCP_MAPS_API_KEY}`
       );
     },
     details: async (data: { placeId: string; locale: string }) => {
       return fetch(
-        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${data.placeId}&fields=photo,name,international_phone_number,website,formatted_address,opening_hours,user_ratings_total,reviews,geometry&locationbias=ipbias&language=${data.locale}&key=${process.env.EXPO_PUBLIC_GCP_MAPS_API_KEY}`
+        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${data.placeId}&fields=rating,price_level,wheelchair_accessible_entrance,photo,name,international_phone_number,website,formatted_address,opening_hours,user_ratings_total,reviews,geometry&key=${process.env.EXPO_PUBLIC_GCP_MAPS_API_KEY}`
       );
     },
   },

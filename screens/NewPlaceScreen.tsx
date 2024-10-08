@@ -14,9 +14,14 @@ import {
 import { QueryPlaceResults } from "../components/QueryPlaceResults";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
+import * as Location from "expo-location";
 
 export const NewPlaceScreen = () => {
   const theme = useTheme();
+  const [status, requestPermission] = Location.useForegroundPermissions();
+  const [location, setLocation] = useState<Location.LocationObject | null>(
+    null
+  );
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
   const [search, setSearch] = useState("");
   const [hasBitcoin, setHasBitcoin] = useState(false);
@@ -31,6 +36,16 @@ export const NewPlaceScreen = () => {
   const [selectedPlaceDetails, setSelectedPlaceDetails] =
     useState<GooglePlaceDetails | null>(null);
   const [isPlaceConfirmed, setIsPlaceConfirmed] = useState(false);
+
+  useEffect(() => {
+    if (status?.granted) {
+      Location.getCurrentPositionAsync().then((location) => {
+        setLocation(location);
+      });
+    } else {
+      requestPermission();
+    }
+  }, [status]);
 
   useEffect(() => {
     onSearchChange(search);
@@ -50,6 +65,10 @@ export const NewPlaceScreen = () => {
     const searchResult = await googleMapsClient.places.autocomplete({
       input: data,
       locale: locale.languageTag.replace("-", "_"),
+      coordinates:
+        location?.coords.longitude && location?.coords.latitude
+          ? [location?.coords.latitude, location?.coords.longitude]
+          : [],
     });
     searchResult
       .json()
@@ -89,6 +108,7 @@ export const NewPlaceScreen = () => {
       );
       return;
     }
+
     firebaseClient().places.create({
       hasBitcoin,
       hasCryptos,
@@ -104,6 +124,10 @@ export const NewPlaceScreen = () => {
       ratingGoogle: selectedPlaceDetails.result.user_ratings_total ?? 0,
       phone: selectedPlaceDetails?.result.international_phone_number ?? null,
       website: selectedPlaceDetails?.result.website ?? null,
+      priceLevel: selectedPlaceDetails?.result.price_level ?? null,
+      rating: selectedPlaceDetails?.result.rating ?? null,
+      wheelchairAccessibleEntrance:
+        selectedPlaceDetails?.result.wheelchair_accessible_entrance ?? null,
     });
     navigation.goBack();
   };

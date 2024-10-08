@@ -6,6 +6,9 @@ export interface GooglePlaceDetails {
 
 export interface Result {
   international_phone_number: string | undefined;
+  rating: number | undefined;
+  price_level: number | undefined;
+  wheelchair_accessible_entrance: boolean | undefined;
   name: string;
   formatted_address: string;
   opening_hours: OpeningHours | undefined;
