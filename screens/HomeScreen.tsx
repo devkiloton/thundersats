@@ -1,5 +1,5 @@
 import { ParamListBase, useNavigation } from "@react-navigation/native";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { FAB, useTheme } from "react-native-paper";
 import { Text } from "react-native-paper";
 import { categories } from "../constants/categories";
@@ -14,50 +14,55 @@ export const HomeScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   return (
-    <View
-      style={{ ...styles.container, backgroundColor: theme.colors.background }}
-    >
-      <View style={styles.header}>
-        <FAB
-          customSize={96}
-          icon="map-marker"
-          mode="flat"
-          size="large"
-          label="Find places"
-          style={{ width: "100%" }}
-          onPress={() => navigation.navigate("Map")}
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View
+        style={{
+          ...styles.container,
+          backgroundColor: theme.colors.background,
+        }}
+      >
+        <View style={styles.header}>
+          <FAB
+            customSize={96}
+            icon="map-marker"
+            mode="flat"
+            size="large"
+            label="Find places"
+            style={{ width: "100%" }}
+            onPress={() => navigation.navigate("Map")}
+          />
+        </View>
+        <View style={styles.secondaryHeader}>
+          <FAB
+            customSize={96}
+            icon="heart"
+            mode="flat"
+            size="large"
+            label="Favorites"
+            style={{ flex: 1 }}
+            onPress={() => console.log("Pressed")}
+          />
+          <FAB
+            customSize={96}
+            icon="plus"
+            mode="flat"
+            size="large"
+            label="New place"
+            style={{ flex: 1 }}
+            onPress={() => navigation.navigate("New place")}
+          />
+        </View>
+        <Text variant="headlineLarge" style={{ fontWeight: "bold" }}>
+          Categories
+        </Text>
+        <CategoryCarousel
+          categories={categories}
+          activeCategory={selectedCategory}
+          onChange={setSelectedCategory}
         />
+        <PlaceList />
       </View>
-      <View style={styles.secondaryHeader}>
-        <FAB
-          customSize={96}
-          icon="heart"
-          mode="flat"
-          size="large"
-          label="Favorites"
-          style={{ flex: 1 }}
-          onPress={() => console.log("Pressed")}
-        />
-        <FAB
-          customSize={96}
-          icon="plus"
-          mode="flat"
-          size="large"
-          label="New place"
-          style={{ flex: 1 }}
-          onPress={() => navigation.navigate("New place")}
-        />
-      </View>
-      <Text variant="headlineLarge" style={{ fontWeight: "bold" }}>
-        Categories
-      </Text>
-      <CategoryCarousel
-        categories={categories}
-        activeCategory={selectedCategory}
-        onChange={setSelectedCategory}
-      />
-      <PlaceList />
-    </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
