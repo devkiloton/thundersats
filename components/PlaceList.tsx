@@ -19,6 +19,7 @@ export const PlaceList = () => {
     <FlatList
       contentContainerStyle={{ gap: 8 }}
       style={{ borderRadius: 16 }}
+      scrollEnabled={false}
       data={places}
       renderItem={({ item: place }) => (
         <TouchableRipple
