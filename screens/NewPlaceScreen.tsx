@@ -75,7 +75,7 @@ export const NewPlaceScreen = () => {
       placeId,
       locale: locale.languageTag.replace("-", "_"),
     });
-    placeDetails.json().then((place) => setSelectedPlaceDetails(place));
+    placeDetails.json().then(setSelectedPlaceDetails);
   };
 
   const createPlace = () => {
@@ -100,9 +100,9 @@ export const NewPlaceScreen = () => {
         lat: selectedPlaceDetails.result.geometry.location.lat,
         lng: selectedPlaceDetails.result.geometry.location.lng,
       },
-      name: selectedPlace?.description,
+      name: selectedPlaceDetails.result.name,
       ratingGoogle: selectedPlaceDetails.result.user_ratings_total ?? 0,
-      phone: selectedPlaceDetails?.result.formatted_phone_number ?? null,
+      phone: selectedPlaceDetails?.result.international_phone_number ?? null,
       website: selectedPlaceDetails?.result.website ?? null,
     });
     navigation.goBack();

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { firebaseClient, Place } from "../clients/firebase";
-import { FlatList } from "react-native";
-import { Card, Text, TouchableRipple } from "react-native-paper";
+import { FlatList, TouchableOpacity } from "react-native";
+import { Card, Text, TouchableRipple, MD3LightTheme } from "react-native-paper";
+import { TouchableHighlight } from "react-native-gesture-handler";
 
 export const PlaceList = () => {
   const [places, setPlaces] = useState<Place[] | null>([]);
@@ -22,17 +23,26 @@ export const PlaceList = () => {
       scrollEnabled={false}
       data={places}
       renderItem={({ item: place }) => (
-        <TouchableRipple
+        <TouchableHighlight
           key={place.locationIdGoogle}
           onPress={() => {}}
-          style={{ borderRadius: 32 }}
+          style={{
+            borderRadius: 12,
+            backgroundColor: "white",
+          }}
         >
           <Card mode="contained">
             <Card.Content>
-              <Text variant="titleMedium">{place.name}</Text>
+              <Text
+                ellipsizeMode="tail"
+                numberOfLines={1}
+                variant="titleMedium"
+              >
+                {place.name}
+              </Text>
             </Card.Content>
           </Card>
-        </TouchableRipple>
+        </TouchableHighlight>
       )}
       keyExtractor={(item) => item.locationIdGoogle}
     />
