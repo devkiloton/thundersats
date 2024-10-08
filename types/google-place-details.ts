@@ -5,7 +5,8 @@ export interface GooglePlaceDetails {
 }
 
 export interface Result {
-  formatted_phone_number: string | undefined;
+  international_phone_number: string | undefined;
+  name: string;
   formatted_address: string;
   opening_hours: OpeningHours | undefined;
   photos: Photo[] | undefined;
