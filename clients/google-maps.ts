@@ -23,6 +23,6 @@ export const googleMapsClient = {
   },
   urls: {
     photos: (data: { photoReference: string; maxWidth: number }) =>
-      `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${data.photoReference}&key=${process.env.EXPO_PUBLIC_GCP_MAPS_API_KEY}`,
+      `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${data.maxWidth}&photoreference=${data.photoReference}&key=${process.env.EXPO_PUBLIC_GCP_MAPS_API_KEY}`,
   },
 };

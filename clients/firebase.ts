@@ -1,11 +1,10 @@
 import {
   get,
   getDatabase,
-  limitToLast,
+  limitToFirst,
   query,
   ref,
   set,
-  startAt,
 } from "firebase/database";
 
 export const firebaseClient = () => {
@@ -18,17 +17,12 @@ export const firebaseClient = () => {
       /**
        * The start can be a number or uid
        */
-      query: async ({
-        limit,
-        start,
-      }: {
-        limit: number;
-        start: number | string | null;
-      }) => {
+      query: async ({ limit, page }: { limit: number; page: number }) => {
         const db = getDatabase();
         const reference = ref(db, "places");
+        // TODO: Learn to paginate with Firebase realtime database
         const snapshot = await get(
-          query(reference, limitToLast(limit), startAt(start))
+          query(reference, limitToFirst(limit * page))
         );
         return snapshot.val() as Record<string, Place>;
       },
