@@ -14,7 +14,7 @@ export const HomeScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <PlaceList>
       <View
         style={{
           ...styles.container,
@@ -60,9 +60,8 @@ export const HomeScreen = () => {
           activeCategory={selectedCategory}
           onChange={setSelectedCategory}
         />
-        <PlaceList />
       </View>
-    </ScrollView>
+    </PlaceList>
   );
 };
 const styles = StyleSheet.create({
