@@ -12,6 +12,9 @@ const MARGIN_HORIZONTAL = 8;
 const SNAP_TO_INTERVAL = CARD_WIDTH + MARGIN_HORIZONTAL * 2;
 const CONTENT_INSET = 64 / 2 - MARGIN_HORIZONTAL;
 
+const LATITUDE_DELTA = 0.009;
+const LONGITUDE_DELTA = 0.009;
+
 export const Map = () => {
   const [status, requestPermission] = Location.useForegroundPermissions();
   const [location, setLocation] = useState<Location.LocationObject | null>(
@@ -33,10 +36,11 @@ export const Map = () => {
   }, [status]);
 
   useEffect(() => {
+    // TODO: Adjust query algorithm here
     firebaseClient()
       .places.query({
         limit: 30,
-        start: null,
+        page: 1,
       })
       .then((placesFirebase) => {
         setPlaces(Object.values(placesFirebase ?? {}));
@@ -57,8 +61,8 @@ export const Map = () => {
       const region = {
         latitude: place.location.lat,
         longitude: place.location.lng,
-        latitudeDelta: 0.005,
-        longitudeDelta: 0.005,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
       };
       mapRef.current?.animateToRegion(region);
     });
@@ -69,8 +73,8 @@ export const Map = () => {
     const region = {
       latitude: place.location.lat,
       longitude: place.location.lng,
-      latitudeDelta: 0.005,
-      longitudeDelta: 0.005,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
     };
     mapRef.current?.animateToRegion(region);
     scrollViewRef.current?.scrollTo({
@@ -112,8 +116,8 @@ export const Map = () => {
         region={{
           latitude: location?.coords.latitude ?? 0,
           longitude: location?.coords.longitude ?? 0,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
         }}
       >
         {places.map((place, index) => {
