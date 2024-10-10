@@ -1,11 +1,14 @@
 import {
+  equalTo,
   get,
   getDatabase,
   limitToFirst,
+  orderByChild,
   query,
   ref,
   set,
 } from "firebase/database";
+import { CategoriesEnum } from "../constants/categories";
 
 export const firebaseClient = () => {
   return {
@@ -17,14 +20,34 @@ export const firebaseClient = () => {
       /**
        * The start can be a number or uid
        */
-      query: async ({ limit, page }: { limit: number; page: number }) => {
+      query: async ({
+        limit,
+        page,
+        category = null,
+      }: {
+        limit: number;
+        page: number;
+        category?: CategoriesEnum | null;
+      }) => {
         const db = getDatabase();
         const reference = ref(db, "places");
+
+        const queryWithCategory = query(
+          reference,
+          orderByChild("category"),
+          equalTo(category),
+          limitToFirst(limit * page)
+        );
+
+        const queryWithoutCategory = query(
+          reference,
+          limitToFirst(limit * page)
+        );
         // TODO: Learn to paginate with Firebase realtime database
         const snapshot = await get(
-          query(reference, limitToFirst(limit * page))
+          category ? queryWithCategory : queryWithoutCategory
         );
-        return snapshot.val() as Record<string, Place>;
+        return snapshot.val() as Record<string, Place> | null;
       },
     },
   };
