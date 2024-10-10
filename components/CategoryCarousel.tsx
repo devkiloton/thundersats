@@ -1,11 +1,12 @@
 import { FC } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { Chip, useTheme } from "react-native-paper";
+import { CategoriesEnum } from "../constants/categories";
 
 type CategoryCarouselProps = {
-  categories: Array<{ name: string; icon: string }>;
-  activeCategory: string | null;
-  onChange?: (category: string) => void;
+  categories: Array<{ name: CategoriesEnum; icon: string }>;
+  activeCategory: CategoriesEnum | null;
+  onChange?: (category: CategoriesEnum | null) => void;
 };
 
 export const CategoryCarousel: FC<CategoryCarouselProps> = ({
@@ -32,7 +33,11 @@ export const CategoryCarousel: FC<CategoryCarouselProps> = ({
             showSelectedOverlay={true}
             showSelectedCheck
             icon={data.item.icon}
-            onPress={() => onChange?.(data.item.name)}
+            onPress={() =>
+              onChange?.(
+                data.item.name === activeCategory ? null : data.item.name
+              )
+            }
           >
             {data.item.name}
           </Chip>
@@ -48,6 +53,6 @@ export const CategoryCarousel: FC<CategoryCarouselProps> = ({
 const styles = StyleSheet.create({
   horizontalFlatlist: {
     flexDirection: "row",
-    gap: 16,
+    gap: 8,
   },
 });
