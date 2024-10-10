@@ -5,6 +5,11 @@ import * as Location from "expo-location";
 import { firebaseClient, Place } from "../clients/firebase";
 import { Button, Card } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
+import { ParamListBase, useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import Constants from "expo-constants";
+import { googleMapsClient } from "../clients/google-maps";
+import { AcceptedCoins } from "./AcceptedCoins";
 
 const { width } = Dimensions.get("screen");
 const CARD_WIDTH = width - 64;
@@ -24,6 +29,7 @@ export const Map = () => {
   const mapRef = React.useRef<MapView>(null);
   const scrollViewRef = React.useRef<ScrollView>(null);
   const mapAnimation = new Animated.Value(0);
+  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
 
   useEffect(() => {
     if (status?.granted) {
@@ -157,6 +163,18 @@ export const Map = () => {
           );
         })}
       </MapView>
+      <Button
+        style={{
+          position: "absolute",
+          top: Constants.statusBarHeight + 16,
+          left: 16,
+        }}
+        icon="arrow-left"
+        mode="contained"
+        onPress={() => navigation.navigate("Home")}
+      >
+        Go back
+      </Button>
       <Animated.ScrollView
         ref={scrollViewRef}
         horizontal
@@ -197,18 +215,23 @@ export const Map = () => {
           >
             <Card.Cover
               style={{ height: 150 }}
-              source={{ uri: "https://picsum.photos/700" }}
+              source={{
+                uri: place?.coverPhotoReference
+                  ? googleMapsClient.urls.photos({
+                      photoReference: place.coverPhotoReference,
+                      maxWidth: 400,
+                    })
+                  : "https://via.placeholder.com/400",
+              }}
             />
             <Card.Title
-              titleNumberOfLines={2}
+              titleNumberOfLines={1}
               title={place.name}
-              subtitle="Card Subtitle"
+              subtitle={place.address}
             />
-            {/* <Card.Content></Card.Content> */}
-            <Card.Actions>
-              <Button>Cancel</Button>
-              <Button>Ok</Button>
-            </Card.Actions>
+            <Card.Content>
+              <AcceptedCoins place={place} />
+            </Card.Content>
           </Card>
         ))}
       </Animated.ScrollView>

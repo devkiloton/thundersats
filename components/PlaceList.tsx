@@ -4,6 +4,7 @@ import { FlatList, Image, View } from "react-native";
 import { Card, Text, Icon } from "react-native-paper";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { CategoriesEnum } from "../constants/categories";
+import { AcceptedCoins } from "./AcceptedCoins";
 
 type PlaceListProps = {
   children: React.ComponentType<any> | React.ReactElement | null;
@@ -106,32 +107,7 @@ export const PlaceList = ({ children, category }: PlaceListProps) => {
                     {place.rating}
                   </Text>
                 </View>
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: 2,
-                  }}
-                >
-                  {place.hasBitcoin && (
-                    <Image
-                      style={{ width: 16, height: 16 }}
-                      source={require("../assets/btc-logo.png")}
-                    />
-                  )}
-                  {place.hasLighting && (
-                    <Image
-                      style={{ width: 16, height: 16 }}
-                      source={require("../assets/ln-logo.png")}
-                    />
-                  )}
-                  {place.hasCryptos && (
-                    <Image
-                      style={{ width: 11, height: 16 }}
-                      source={require("../assets/eth-logo.png")}
-                    />
-                  )}
-                </View>
+                <AcceptedCoins place={place} />
               </View>
             </Card.Content>
           </Card>
