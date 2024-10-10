@@ -40,7 +40,7 @@ export const QueryPlaceResults = ({
   } else {
     return (
       <>
-        <Text variant="headlineLarge" style={{ fontWeight: "bold" }}>
+        <Text variant="headlineMedium" style={{ fontWeight: "bold" }}>
           Gallery
         </Text>
         <FlatList
@@ -62,7 +62,7 @@ export const QueryPlaceResults = ({
             />
           )}
         />
-        <Text variant="headlineLarge" style={{ fontWeight: "bold" }}>
+        <Text variant="headlineMedium" style={{ fontWeight: "bold" }}>
           Reviews
         </Text>
         <FlatList
