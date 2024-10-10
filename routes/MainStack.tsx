@@ -10,8 +10,16 @@ const Stack = createStackNavigator();
 export const MainStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Welcome"
+        component={WelcomeScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Home"
+        component={HomeScreen}
+      />
       <Stack.Screen name="New place" component={NewPlaceScreen} />
       <Stack.Screen name="Map" component={MapScreen} />
     </Stack.Navigator>

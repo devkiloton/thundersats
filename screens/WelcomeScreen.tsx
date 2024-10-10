@@ -9,6 +9,7 @@ import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useEffect } from "react";
 import * as Location from "expo-location";
+import { SafeAreaView } from "react-native";
 
 export const WelcomeScreen = () => {
   // TODO: DEVELOPMENT PURPOSES ONLY, THIS ENTIRE COMPONENT SHOULD BE REFACTORED
@@ -33,16 +34,13 @@ export const WelcomeScreen = () => {
 
   const signIn = () => {
     const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password).catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    });
+    signInWithEmailAndPassword(auth, email, password).catch((error) => {});
   };
 
   return (
-    <>
+    <SafeAreaView>
       <Button onPress={() => createAccount()}>Create account</Button>
       <Button onPress={() => signIn()}>Sign in</Button>
-    </>
+    </SafeAreaView>
   );
 };
