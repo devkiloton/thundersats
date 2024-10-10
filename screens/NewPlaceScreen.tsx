@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Button, Searchbar, Switch, Text, useTheme } from "react-native-paper";
 import { CategoryCarousel } from "../components/CategoryCarousel";
-import { categories } from "../constants/categories";
+import { categories, CategoriesEnum } from "../constants/categories";
 import { useLocales } from "expo-localization";
 import { GooglePlaceDetails } from "../types/google-place-details";
 import { googleMapsClient } from "../clients/google-maps";
@@ -27,7 +27,7 @@ export const NewPlaceScreen = () => {
   const [hasBitcoin, setHasBitcoin] = useState(false);
   const [hasLighting, setHasLighting] = useState(false);
   const [hasCryptos, setHasCryptos] = useState(false);
-  const [category, setCategory] = useState<string | null>(null);
+  const [category, setCategory] = useState<CategoriesEnum | null>(null);
   const [googleAutocompletePlaces, setGoogleAutocompletePlaces] = useState<
     GoogleAutocompletePlace[]
   >([]);
