@@ -4,12 +4,17 @@ import { useTheme } from "react-native-paper";
 import { MapScreen } from "../screens/MapScreen";
 import { WelcomeScreen } from "../screens/WelcomeScreen";
 import { NewPlaceScreen } from "../screens/NewPlaceScreen";
+import { MainTab } from "./MainTab";
 
 const Stack = createStackNavigator();
 
 export const MainStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        animationTypeForReplace: "push",
+      }}
+    >
       <Stack.Screen
         options={{ headerShown: false }}
         name="Welcome"
@@ -18,10 +23,14 @@ export const MainStack = () => {
       <Stack.Screen
         options={{ headerShown: false }}
         name="Home"
-        component={HomeScreen}
+        component={MainTab}
       />
       <Stack.Screen name="New place" component={NewPlaceScreen} />
-      <Stack.Screen name="Map" component={MapScreen} />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Map"
+        component={MapScreen}
+      />
     </Stack.Navigator>
   );
 };
