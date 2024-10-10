@@ -3,12 +3,14 @@ import { firebaseClient, Place } from "../clients/firebase";
 import { FlatList, Image, View } from "react-native";
 import { Card, Text, Icon } from "react-native-paper";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import { CategoriesEnum } from "../constants/categories";
 
 type PlaceListProps = {
   children: React.ComponentType<any> | React.ReactElement | null;
+  category: CategoriesEnum | null;
 };
 
-export const PlaceList = ({ children }: PlaceListProps) => {
+export const PlaceList = ({ children, category }: PlaceListProps) => {
   const [places, setPlaces] = useState<(Place & { id: string })[]>([]);
   const [paginationLimit, setPaginationLimit] = useState({
     base: 8,
@@ -20,8 +22,11 @@ export const PlaceList = ({ children }: PlaceListProps) => {
       .places.query({
         limit: paginationLimit.base,
         page: paginationLimit.increment,
+        category,
       })
       .then((placesFirebase) => {
+        if (placesFirebase === null) return;
+
         const placesWithId = Object.entries(placesFirebase)
           .filter(([key]) => !places.find((place) => place.id === key))
           .map(([id, place]) => ({ ...place, id }));
@@ -35,8 +40,13 @@ export const PlaceList = ({ children }: PlaceListProps) => {
   };
 
   useEffect(() => {
+    setPlaces([]);
+    setPaginationLimit({
+      base: 8,
+      increment: 1,
+    });
     updatePlaces();
-  }, []);
+  }, [category]);
 
   return (
     <FlatList
