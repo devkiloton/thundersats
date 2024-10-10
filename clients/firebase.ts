@@ -68,6 +68,7 @@ export interface Place {
   rating: number | undefined | null;
   priceLevel: number | undefined | null;
   wheelchairAccessibleEntrance: boolean | undefined | null;
+  coverPhotoReference: string | undefined | null;
 }
 
 interface Location {
