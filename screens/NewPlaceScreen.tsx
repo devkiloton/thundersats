@@ -128,6 +128,8 @@ export const NewPlaceScreen = () => {
       rating: selectedPlaceDetails?.result.rating ?? null,
       wheelchairAccessibleEntrance:
         selectedPlaceDetails?.result.wheelchair_accessible_entrance ?? null,
+      coverPhotoReference:
+        selectedPlaceDetails?.result.photos?.[0]?.photo_reference ?? null,
     });
     navigation.goBack();
   };
