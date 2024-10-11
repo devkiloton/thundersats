@@ -2,6 +2,7 @@ import * as React from "react";
 import { BottomNavigation, Text } from "react-native-paper";
 import { HomeStack } from "./HomeStack";
 import { Preferences } from "../screens/Preferences";
+import { WalletScreen } from "../screens/WalletScreen";
 
 const WalletRoute = () => <Text>Recents</Text>;
 
@@ -31,7 +32,7 @@ export const MainTab = () => {
   const renderScene = BottomNavigation.SceneMap({
     home: HomeStack,
     preferences: Preferences,
-    wallet: WalletRoute,
+    wallet: WalletScreen,
   });
 
   return (
