@@ -1,8 +1,7 @@
 import * as React from "react";
 import { BottomNavigation, Text } from "react-native-paper";
 import { HomeStack } from "./HomeStack";
-
-const ConfigRoute = () => <Text>Albums</Text>;
+import { Preferences } from "../screens/Preferences";
 
 const WalletRoute = () => <Text>Recents</Text>;
 
@@ -31,7 +30,7 @@ export const MainTab = () => {
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeStack,
-    preferences: ConfigRoute,
+    preferences: Preferences,
     wallet: WalletRoute,
   });
 

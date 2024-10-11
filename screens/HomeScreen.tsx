@@ -1,6 +1,6 @@
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { SafeAreaView, StyleSheet, View } from "react-native";
-import { FAB, useTheme } from "react-native-paper";
+import { Appbar, FAB, useTheme } from "react-native-paper";
 import { Text } from "react-native-paper";
 import { categories } from "../constants/categories";
 import { CategoryCarousel } from "../components/CategoryCarousel";
@@ -16,7 +16,10 @@ export const HomeScreen = () => {
     useState<CategoriesEnum | null>(null);
 
   return (
-    <SafeAreaView>
+    <View>
+      <Appbar.Header mode="small">
+        <Appbar.Content title="Thundersats" />
+      </Appbar.Header>
       <PlaceList category={selectedCategory}>
         <>
           <View
@@ -56,9 +59,7 @@ export const HomeScreen = () => {
                 onPress={() => navigation.navigate("New place")}
               />
             </View>
-            <Text variant="headlineMedium" style={{ fontWeight: "bold" }}>
-              Explore
-            </Text>
+            <Text variant="titleLarge">Explore</Text>
             <CategoryCarousel
               categories={categories}
               activeCategory={selectedCategory}
@@ -67,7 +68,7 @@ export const HomeScreen = () => {
           </View>
         </>
       </PlaceList>
-    </SafeAreaView>
+    </View>
   );
 };
 const styles = StyleSheet.create({
