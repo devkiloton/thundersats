@@ -225,7 +225,8 @@ export const NewPlaceScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    margin: 16,
+
     gap: 16,
   },
   switch: {

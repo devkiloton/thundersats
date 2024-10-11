@@ -23,7 +23,7 @@ export const WelcomeScreen = () => {
 
   onAuthStateChanged(getAuth(), (user) => {
     if (user) {
-      navigation.navigate("Home");
+      navigation.navigate("Home Tab");
     }
   });
 
