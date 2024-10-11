@@ -1,4 +1,5 @@
 import {
+  endAt,
   equalTo,
   get,
   getDatabase,
@@ -7,6 +8,7 @@ import {
   query,
   ref,
   set,
+  startAt,
 } from "firebase/database";
 import { CategoriesEnum } from "../constants/categories";
 
@@ -24,33 +26,76 @@ export const firebaseClient = () => {
         limit,
         page,
         category = null,
+        bbox = null,
       }: {
         limit: number;
         page: number;
         category?: CategoriesEnum | null;
+        bbox?: number[] | null;
       }) => {
         const db = getDatabase();
         const reference = ref(db, "places");
-
-        const queryWithCategory = query(
+        const queryConstraint = _getQueryConstraints({
+          category,
+          bbox,
+          limit,
+          page,
           reference,
-          orderByChild("category"),
-          equalTo(category),
-          limitToFirst(limit * page)
-        );
+        });
 
-        const queryWithoutCategory = query(
-          reference,
-          limitToFirst(limit * page)
-        );
         // TODO: Learn to paginate with Firebase realtime database
-        const snapshot = await get(
-          category ? queryWithCategory : queryWithoutCategory
-        );
-        return snapshot.val() as Record<string, Place> | null;
+        const snapshot = await get(queryConstraint);
+        snapshot.val() as Record<string, Place> | null;
+
+        if (!snapshot.exists()) return null;
+
+        if (!bbox) return snapshot.val() as Record<string, Place>;
+
+        if (bbox) {
+          const places = snapshot.val() as Record<string, Place>;
+          // Filtering lat since Firebase doesn't support multiple orderByChild
+          const filteredLat = Object.entries(places).filter(([, place]) => {
+            return (
+              place.location.lat >= bbox[1] && place.location.lat <= bbox[3]
+            );
+          });
+          return Object.fromEntries(filteredLat) as Record<string, Place>;
+        }
       },
     },
   };
+};
+
+const _getQueryConstraints = ({
+  category,
+  bbox,
+  limit,
+  page,
+  reference,
+}: {
+  category: CategoriesEnum | null;
+  bbox: number[] | null;
+  limit: number;
+  page: number;
+  reference: any;
+}) => {
+  if (category)
+    return query(
+      reference,
+      orderByChild("category"),
+      equalTo(category),
+      limitToFirst(limit * page)
+    );
+
+  if (bbox)
+    return query(
+      reference,
+      orderByChild("location/lng"),
+      startAt(bbox[0]),
+      endAt(bbox[2])
+    );
+
+  return query(reference, limitToFirst(limit * page));
 };
 
 export interface Place {

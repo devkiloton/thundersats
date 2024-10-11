@@ -30,6 +30,7 @@ export const Map = () => {
   const scrollViewRef = React.useRef<ScrollView>(null);
   const mapAnimation = new Animated.Value(0);
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
+  const [boundaries, setBoundaries] = useState<number[] | null>(null);
 
   useEffect(() => {
     if (status?.granted) {
@@ -41,17 +42,19 @@ export const Map = () => {
     }
   }, [status]);
 
-  useEffect(() => {
+  const queryPlaces = (bbox: number[]) => {
     // TODO: Adjust query algorithm here
     firebaseClient()
       .places.query({
         limit: 30,
         page: 1,
+        bbox,
       })
       .then((placesFirebase) => {
+        console.log(JSON.stringify(placesFirebase, null, 2));
         setPlaces(Object.values(placesFirebase ?? {}));
       });
-  }, []);
+  };
 
   useEffect(() => {
     mapAnimation.addListener(({ value }) => {
@@ -89,6 +92,22 @@ export const Map = () => {
     });
   };
 
+  // Function to check if the new bounding box is outside the current one
+  const isOutsideCurrentBoundaries = (newBBox: Array<number>) => {
+    if (!boundaries) return true; // If there are no current boundaries, update state
+
+    const [newWest, newSouth, newEast, newNorth] = newBBox;
+    const [currWest, currSouth, currEast, currNorth] = boundaries;
+
+    // Check if the new bounding box extends outside of the current one
+    return (
+      newWest < currWest || // New west bound is further west
+      newEast > currEast || // New east bound is further east
+      newSouth < currSouth || // New south bound is further south
+      newNorth > currNorth // New north bound is further north
+    );
+  };
+
   const interpolations = places.map((_, index) => {
     const inputRange = [
       (index - 1) * CARD_WIDTH,
@@ -110,6 +129,22 @@ export const Map = () => {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         ref={mapRef}
+        onRegionChangeComplete={() => {
+          mapRef.current?.getMapBoundaries().then((boundingBox) => {
+            const newBBox = [
+              boundingBox?.southWest.longitude,
+              boundingBox?.southWest.latitude,
+              boundingBox?.northEast.longitude,
+              boundingBox?.northEast.latitude,
+            ];
+
+            // Check if new bounding box is outside current boundaries
+            if (isOutsideCurrentBoundaries(newBBox)) {
+              setBoundaries(newBBox);
+              queryPlaces(newBBox);
+            }
+          });
+        }}
         // customMapStyle={}
         showsMyLocationButton={false}
         showsBuildings={true}
