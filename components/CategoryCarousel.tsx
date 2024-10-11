@@ -4,9 +4,9 @@ import { Chip, useTheme } from "react-native-paper";
 import { CategoriesEnum } from "../constants/categories";
 
 type CategoryCarouselProps = {
-  categories: Array<{ name: CategoriesEnum; icon: string }>;
-  activeCategory: CategoriesEnum | null;
-  onChange?: (category: CategoriesEnum | null) => void;
+  categories: Array<{ name: string; icon: string }>;
+  activeCategory: string | null;
+  onChange?: (category: any | null) => void;
 };
 
 export const CategoryCarousel: FC<CategoryCarouselProps> = ({
