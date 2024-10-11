@@ -26,7 +26,7 @@ export const PlaceList = ({ children, category }: PlaceListProps) => {
         category,
       })
       .then((placesFirebase) => {
-        if (placesFirebase === null) return;
+        if (placesFirebase == null) return;
 
         const placesWithId = Object.entries(placesFirebase)
           .filter(([key]) => !places.find((place) => place.id === key))
