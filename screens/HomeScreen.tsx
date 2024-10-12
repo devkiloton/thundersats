@@ -1,5 +1,5 @@
 import { ParamListBase, useNavigation } from "@react-navigation/native";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Appbar, FAB, useTheme } from "react-native-paper";
 import { Text } from "react-native-paper";
 import { categories } from "../constants/categories";
@@ -42,7 +42,7 @@ export const HomeScreen = () => {
             <View style={styles.secondaryHeader}>
               <FAB
                 customSize={96}
-                icon="heart"
+                icon="bookmark"
                 mode="flat"
                 size="large"
                 label="Favorites"
@@ -71,10 +71,10 @@ export const HomeScreen = () => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
     gap: 12,
