@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { firebaseClient, Place } from "../clients/firebase";
-import { FlatList, Image, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { Card, Text, Icon } from "react-native-paper";
-import { TouchableHighlight } from "react-native-gesture-handler";
 import { CategoriesEnum } from "../constants/categories";
 import { AcceptedCoins } from "./AcceptedCoins";
+import { googleMapsClient } from "../clients/google-maps";
+import { ParamListBase, useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 type PlaceListProps = {
   children: React.ComponentType<any> | React.ReactElement | null;
@@ -17,6 +19,7 @@ export const PlaceList = ({ children, category }: PlaceListProps) => {
     base: 8,
     increment: 1,
   });
+  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
 
   const updatePlaces = () => {
     firebaseClient()
@@ -51,7 +54,11 @@ export const PlaceList = ({ children, category }: PlaceListProps) => {
 
   return (
     <FlatList
-      contentContainerStyle={{ gap: 8 }}
+      contentContainerStyle={{
+        gap: 12,
+        paddingBottom: 150,
+        paddingHorizontal: 16,
+      }}
       ListHeaderComponent={children}
       style={{ borderRadius: 16 }}
       scrollEnabled={true}
@@ -60,58 +67,64 @@ export const PlaceList = ({ children, category }: PlaceListProps) => {
       data={places}
       onEndReached={updatePlaces}
       renderItem={({ item: place }) => (
-        <TouchableHighlight
-          key={place.id}
-          onPress={() => {}}
-          style={{
-            borderRadius: 12,
-            backgroundColor: "white",
-            marginHorizontal: 16,
+        <Card
+          contentStyle={{
+            display: "flex",
+            flexDirection: "column",
           }}
+          onPress={() => navigation.navigate("Place Home", { place })}
+          style={{ shadowOpacity: 0 }}
         >
-          <Card mode="contained">
-            <Card.Content
+          <Card.Cover
+            source={{
+              uri: googleMapsClient.urls.photos({
+                photoReference: place.coverPhotoReference,
+                maxWidth: 400,
+              }),
+            }}
+            style={{ height: 150 }}
+          />
+          <Card.Content
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "column",
+              paddingVertical: 8,
+              gap: 4,
+            }}
+          >
+            <Text ellipsizeMode="tail" numberOfLines={1} variant="titleMedium">
+              {place.name}
+            </Text>
+            <Text ellipsizeMode="tail" numberOfLines={1} variant="bodySmall">
+              {place.address}
+            </Text>
+            <View
               style={{
-                gap: 2,
+                display: "flex",
+                flexDirection: "row",
+                gap: 8,
               }}
             >
-              <Text
-                ellipsizeMode="tail"
-                numberOfLines={1}
-                variant="titleMedium"
-              >
-                {place.name}
-              </Text>
-              <Text ellipsizeMode="tail" numberOfLines={1} variant="bodySmall">
-                {place.address}
-              </Text>
               <View
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  gap: 8,
                 }}
               >
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                  }}
+                <Icon size={16} source={"star"} color="orange" />
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  variant="bodySmall"
                 >
-                  <Icon size={16} source={"star"} color="orange" />
-                  <Text
-                    ellipsizeMode="tail"
-                    numberOfLines={1}
-                    variant="bodySmall"
-                  >
-                    {place.rating}
-                  </Text>
-                </View>
-                <AcceptedCoins place={place} />
+                  {place.rating}
+                </Text>
               </View>
-            </Card.Content>
-          </Card>
-        </TouchableHighlight>
+              <AcceptedCoins place={place} />
+            </View>
+          </Card.Content>
+        </Card>
       )}
       keyExtractor={(item) => item.id}
     />
