@@ -3,6 +3,7 @@ import { MapScreen } from "../screens/MapScreen";
 import { WelcomeScreen } from "../screens/WelcomeScreen";
 import { MainTab } from "./MainTab";
 import { PlaceScreen } from "../screens/PlaceScreen";
+import { FavoritesScreen } from "../screens/FavoritesScreen";
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,11 @@ export const MainStack = () => {
         options={{ headerShown: false }}
         name="Map"
         component={MapScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Favorites"
+        component={FavoritesScreen}
       />
       <Stack.Screen
         options={{ headerShown: false }}
