@@ -22,7 +22,9 @@ export const googleMapsClient = {
     },
   },
   urls: {
-    photos: (data: { photoReference: string; maxWidth: number }) =>
-      `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${data.maxWidth}&photoreference=${data.photoReference}&key=${process.env.EXPO_PUBLIC_GCP_MAPS_API_KEY}`,
+    photos: (data: { photoReference?: string | null; maxWidth: number }) =>
+      data.photoReference
+        ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${data.maxWidth}&photoreference=${data.photoReference}&key=${process.env.EXPO_PUBLIC_GCP_MAPS_API_KEY}`
+        : `https://via.placeholder.com/${data.maxWidth}`,
   },
 };
