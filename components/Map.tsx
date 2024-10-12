@@ -195,18 +195,6 @@ export const Map = () => {
           );
         })}
       </MapView>
-      <Button
-        style={{
-          position: "absolute",
-          top: Constants.statusBarHeight + 16,
-          left: 16,
-        }}
-        icon="arrow-left"
-        mode="contained"
-        onPress={() => navigation.navigate("Home")}
-      >
-        Go back
-      </Button>
       <Animated.ScrollView
         ref={scrollViewRef}
         horizontal
@@ -247,7 +235,7 @@ export const Map = () => {
             }}
           >
             <Card.Cover
-              style={{ height: 150 }}
+              style={{ height: 130 }}
               source={{
                 uri: googleMapsClient.urls.photos({
                   photoReference: place.coverPhotoReference,
@@ -281,6 +269,5 @@ const styles = StyleSheet.create({
   scrollView: {
     position: "absolute",
     bottom: 16,
-    paddingVertical: 40,
   },
 });

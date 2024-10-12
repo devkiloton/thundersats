@@ -3,6 +3,7 @@ import { BottomNavigation, Text } from "react-native-paper";
 import { HomeStack } from "./HomeStack";
 import { Preferences } from "../screens/Preferences";
 import { WalletScreen } from "../screens/WalletScreen";
+import { MapScreen } from "../screens/MapScreen";
 
 const WalletRoute = () => <Text>Recents</Text>;
 
@@ -14,6 +15,12 @@ export const MainTab = () => {
       title: "Home",
       focusedIcon: "home",
       unfocusedIcon: "home-outline",
+    },
+    {
+      key: "explore",
+      title: "Explore",
+      focusedIcon: "map",
+      unfocusedIcon: "map-outline",
     },
     {
       key: "wallet",
@@ -31,6 +38,7 @@ export const MainTab = () => {
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeStack,
+    explore: MapScreen,
     preferences: Preferences,
     wallet: WalletScreen,
   });
