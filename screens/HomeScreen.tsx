@@ -1,6 +1,6 @@
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
-import { Appbar, FAB, useTheme } from "react-native-paper";
+import { Appbar, Badge, FAB, useTheme } from "react-native-paper";
 import { Text } from "react-native-paper";
 import { categories } from "../constants/categories";
 import { CategoryCarousel } from "../components/CategoryCarousel";
@@ -17,8 +17,21 @@ export const HomeScreen = () => {
 
   return (
     <View>
-      <Appbar.Header mode="small">
+      <Appbar.Header mode="small" elevated>
         <Appbar.Content title="Thundersats" />
+        <Appbar.Action
+          icon="plus"
+          onPress={() => navigation.navigate("New place")}
+        />
+        <Appbar.Action
+          icon="bookmark-outline"
+          onPress={() => navigation.navigate("Favorites")}
+        />
+        <Badge
+          size={8}
+          style={{ position: "absolute", top: 24, right: 32, zIndex: 10 }}
+        />
+        <Appbar.Action icon="bell-outline" onPress={() => {}} />
       </Appbar.Header>
       <PlaceList category={selectedCategory}>
         <>
@@ -28,38 +41,6 @@ export const HomeScreen = () => {
               backgroundColor: theme.colors.background,
             }}
           >
-            <View style={styles.header}>
-              <FAB
-                customSize={96}
-                icon="map-marker"
-                mode="flat"
-                size="large"
-                label="Find places"
-                style={{ width: "100%" }}
-                onPress={() => navigation.navigate("Map")}
-              />
-            </View>
-            <View style={styles.secondaryHeader}>
-              <FAB
-                customSize={96}
-                icon="bookmark"
-                mode="flat"
-                size="large"
-                label="Favorites"
-                style={{ flex: 1 }}
-                onPress={() => console.log("Pressed")}
-              />
-              <FAB
-                customSize={96}
-                icon="plus"
-                mode="flat"
-                size="large"
-                label="New place"
-                style={{ flex: 1 }}
-                onPress={() => navigation.navigate("New place")}
-              />
-            </View>
-            <Text variant="titleLarge">Explore</Text>
             <CategoryCarousel
               categories={categories}
               activeCategory={selectedCategory}
