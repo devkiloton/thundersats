@@ -5,15 +5,38 @@ import {
   getDatabase,
   limitToFirst,
   orderByChild,
+  orderByKey,
   query,
   ref,
   set,
   startAt,
 } from "firebase/database";
 import { CategoriesEnum } from "../constants/categories";
+import { getAuth } from "firebase/auth";
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { app } from "../hooks/firebase";
 
 export const firebaseClient = () => {
   return {
+    favorites: {
+      create: async (placeId: string) => {
+        const db = getDatabase();
+        const uid = getAuth().currentUser?.uid;
+        set(ref(db, "favorites/" + `${uid}/` + placeId), true);
+      },
+      delete: async (placeId: string) => {
+        const db = getDatabase();
+        const uid = getAuth().currentUser?.uid;
+        set(ref(db, "favorites/" + `${uid}/` + placeId), null);
+      },
+      get: async () => {
+        const functions = getFunctions(app(), "europe-west3");
+        const favoritePlaces = httpsCallable(functions, "getFavoritePlaces");
+        return favoritePlaces().then(
+          (result) => result.data as Record<string, Place>
+        );
+      },
+    },
     places: {
       create: async (place: Place) => {
         const db = getDatabase();
