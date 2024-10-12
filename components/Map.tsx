@@ -50,10 +50,7 @@ export const Map = () => {
         page: 1,
         bbox,
       })
-      .then((placesFirebase) => {
-        console.log(JSON.stringify(placesFirebase, null, 2));
-        setPlaces(Object.values(placesFirebase ?? {}));
-      });
+      .then((placesFirebase) => setPlaces(Object.values(placesFirebase ?? {})));
   };
 
   useEffect(() => {
@@ -243,6 +240,7 @@ export const Map = () => {
         {places.map((place) => (
           <Card
             key={place.locationIdGoogle}
+            onPress={() => navigation.navigate("Place", { place })}
             style={{
               width: CARD_WIDTH,
               marginHorizontal: MARGIN_HORIZONTAL,
@@ -251,12 +249,10 @@ export const Map = () => {
             <Card.Cover
               style={{ height: 150 }}
               source={{
-                uri: place?.coverPhotoReference
-                  ? googleMapsClient.urls.photos({
-                      photoReference: place.coverPhotoReference,
-                      maxWidth: 400,
-                    })
-                  : "https://via.placeholder.com/400",
+                uri: googleMapsClient.urls.photos({
+                  photoReference: place.coverPhotoReference,
+                  maxWidth: 400,
+                }),
               }}
             />
             <Card.Title
