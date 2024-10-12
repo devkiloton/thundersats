@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { Button, Searchbar, Switch, Text, useTheme } from "react-native-paper";
+import {
+  Appbar,
+  Button,
+  Searchbar,
+  Switch,
+  Text,
+  useTheme,
+} from "react-native-paper";
 import { CategoryCarousel } from "../components/CategoryCarousel";
 import { categories, CategoriesEnum } from "../constants/categories";
 import { useLocales } from "expo-localization";
@@ -135,98 +142,107 @@ export const NewPlaceScreen = () => {
   };
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{
-        ...styles.container,
+    <View
+      style={{
+        flex: 1,
       }}
-      style={{ backgroundColor: theme.colors.background }}
     >
-      {selectedPlace === null || selectedPlaceDetails === null ? (
-        <Searchbar
-          placeholder="Find the place..."
-          onChangeText={setSearch}
-          value={search}
-        />
-      ) : (
-        <>
-          {isPlaceConfirmed && (
-            <>
-              <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                {selectedPlace.structured_formatting.main_text}
-              </Text>
-              <Text variant="labelLarge">
-                {selectedPlaceDetails.result.formatted_address}
-              </Text>
-            </>
-          )}
-        </>
-      )}
+      <Appbar.Header mode="small">
+        <Appbar.BackAction onPress={navigation.goBack} />
+        <Appbar.Content title="Add a new place" />
+      </Appbar.Header>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          ...styles.container,
+        }}
+        style={{ backgroundColor: theme.colors.background }}
+      >
+        {selectedPlace === null || selectedPlaceDetails === null ? (
+          <Searchbar
+            placeholder="Find the place..."
+            onChangeText={setSearch}
+            value={search}
+          />
+        ) : (
+          <>
+            {isPlaceConfirmed && (
+              <>
+                <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
+                  {selectedPlace.structured_formatting.main_text}
+                </Text>
+                <Text variant="labelLarge">
+                  {selectedPlaceDetails.result.formatted_address}
+                </Text>
+              </>
+            )}
+          </>
+        )}
 
-      {googleAutocompletePlaces.length > 0 ? (
-        <>
-          {selectedPlace !== null && (
-            <>
-              <Text variant="titleLarge" style={{ alignSelf: "center" }}>
-                Is it the place?
-              </Text>
-              <View style={{ flexDirection: "row", gap: 8 }}>
-                <Button
-                  style={{ flex: 1 }}
-                  mode="outlined"
-                  onPress={() => onConfirmPlace(false)}
-                >
-                  No
-                </Button>
-                <Button
-                  mode="contained"
-                  style={{ flex: 1 }}
-                  onPress={() => onConfirmPlace(true)}
-                >
-                  Yes
-                </Button>
-              </View>
-            </>
-          )}
-          <QueryPlaceResults
-            googleAutoCompletePlaces={googleAutocompletePlaces}
-            onPlaceSelected={setSelectedPlace}
-            selectedPlace={selectedPlaceDetails}
-          />
-        </>
-      ) : (
-        <>
-          <View style={styles.switch}>
-            <Text>Do they accept Bitcoin?</Text>
-            <Switch value={hasBitcoin} onValueChange={onToggleBitcoin} />
-          </View>
-          <View style={styles.switch}>
-            <Text>Do they accept Bitcoin Lighting?</Text>
-            <Switch value={hasLighting} onValueChange={onToggleLighting} />
-          </View>
-          <View style={styles.switch}>
-            <Text>Do they accept other cryptos?</Text>
-            <Switch value={hasCryptos} onValueChange={onToggleCrypto} />
-          </View>
-          <Text>Choose some category</Text>
-          <CategoryCarousel
-            categories={categories}
-            activeCategory={category}
-            onChange={setCategory}
-          />
-          <Button icon="send" mode="contained" onPress={() => createPlace()}>
-            Send
-          </Button>
-        </>
-      )}
-    </ScrollView>
+        {googleAutocompletePlaces.length > 0 ? (
+          <>
+            {selectedPlace !== null && (
+              <>
+                <Text variant="titleLarge" style={{ alignSelf: "center" }}>
+                  Is it the place?
+                </Text>
+                <View style={{ flexDirection: "row", gap: 8 }}>
+                  <Button
+                    style={{ flex: 1 }}
+                    mode="outlined"
+                    onPress={() => onConfirmPlace(false)}
+                  >
+                    No
+                  </Button>
+                  <Button
+                    mode="contained"
+                    style={{ flex: 1 }}
+                    onPress={() => onConfirmPlace(true)}
+                  >
+                    Yes
+                  </Button>
+                </View>
+              </>
+            )}
+            <QueryPlaceResults
+              googleAutoCompletePlaces={googleAutocompletePlaces}
+              onPlaceSelected={setSelectedPlace}
+              selectedPlace={selectedPlaceDetails}
+            />
+          </>
+        ) : (
+          <>
+            <View style={styles.switch}>
+              <Text>Do they accept Bitcoin?</Text>
+              <Switch value={hasBitcoin} onValueChange={onToggleBitcoin} />
+            </View>
+            <View style={styles.switch}>
+              <Text>Do they accept Bitcoin Lighting?</Text>
+              <Switch value={hasLighting} onValueChange={onToggleLighting} />
+            </View>
+            <View style={styles.switch}>
+              <Text>Do they accept other cryptos?</Text>
+              <Switch value={hasCryptos} onValueChange={onToggleCrypto} />
+            </View>
+            <Text>Choose some category</Text>
+            <CategoryCarousel
+              categories={categories}
+              activeCategory={category}
+              onChange={setCategory}
+            />
+            <Button icon="send" mode="contained" onPress={() => createPlace()}>
+              Send
+            </Button>
+          </>
+        )}
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     margin: 16,
-
     gap: 16,
   },
   switch: {
