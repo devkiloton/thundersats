@@ -36,7 +36,7 @@ export const Preferences = () => {
 
   return (
     <View>
-      <Appbar.Header mode="small">
+      <Appbar.Header mode="small" elevated>
         <Appbar.Content title="Preferences" />
       </Appbar.Header>
 

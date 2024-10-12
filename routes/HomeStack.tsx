@@ -1,7 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { HomeScreen } from "../screens/HomeScreen";
 import { NewPlaceScreen } from "../screens/NewPlaceScreen";
-import { NavigationHeader } from "../components/shared/NavigationHeader";
 import { PlaceScreen } from "../screens/PlaceScreen";
 
 const Stack = createStackNavigator();

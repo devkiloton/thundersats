@@ -6,17 +6,17 @@ export const WalletScreen = () => {
   const [activeCategory, setActiveCategory] = useState("Bitcoin");
   return (
     <View>
-      <Appbar.Header mode="small">
+      <Appbar.Header mode="small" elevated>
         <Appbar.Content title="Wallet" />
-        <CategoryCarousel
-          categories={[
-            { name: "Bitcoin", icon: "bitcoin" },
-            { name: "Lightning", icon: "lightning-bolt-circle" },
-          ]}
-          activeCategory={activeCategory}
-          onChange={setActiveCategory}
-        />
       </Appbar.Header>
+      <CategoryCarousel
+        categories={[
+          { name: "Bitcoin", icon: "bitcoin" },
+          { name: "Lightning", icon: "lightning-bolt-circle" },
+        ]}
+        activeCategory={activeCategory}
+        onChange={setActiveCategory}
+      />
     </View>
   );
 };

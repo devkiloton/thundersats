@@ -147,7 +147,7 @@ export const NewPlaceScreen = () => {
         flex: 1,
       }}
     >
-      <Appbar.Header mode="small">
+      <Appbar.Header mode="small" elevated>
         <Appbar.BackAction onPress={navigation.goBack} />
         <Appbar.Content title="Add a new place" />
       </Appbar.Header>
