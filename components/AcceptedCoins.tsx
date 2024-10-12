@@ -12,7 +12,7 @@ export const AcceptedCoins = ({ place }: AcceptedCoinsProps) => {
       style={{
         display: "flex",
         flexDirection: "row",
-        gap: 2,
+        gap: 4,
       }}
     >
       {place.hasBitcoin && (
