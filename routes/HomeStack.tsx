@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { HomeScreen } from "../screens/HomeScreen";
 import { NewPlaceScreen } from "../screens/NewPlaceScreen";
 import { NavigationHeader } from "../components/shared/NavigationHeader";
+import { PlaceScreen } from "../screens/PlaceScreen";
 
 const Stack = createStackNavigator();
 
@@ -14,9 +15,14 @@ export const HomeStack = () => {
         component={HomeScreen}
       />
       <Stack.Screen
-        options={{ header: NavigationHeader }}
+        options={{ headerShown: false }}
         name="New place"
         component={NewPlaceScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Place Home"
+        component={PlaceScreen}
       />
     </Stack.Navigator>
   );
