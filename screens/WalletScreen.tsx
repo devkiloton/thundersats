@@ -1,8 +1,7 @@
-import { Appbar } from "react-native-paper";
+import { Appbar, Button } from "react-native-paper";
 import { CategoryCarousel } from "../components/CategoryCarousel";
 import { useState } from "react";
 import { View } from "react-native";
-
 export const WalletScreen = () => {
   const [activeCategory, setActiveCategory] = useState("Bitcoin");
   return (
