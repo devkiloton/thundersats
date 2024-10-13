@@ -5,7 +5,6 @@ import {
   getDatabase,
   limitToFirst,
   orderByChild,
-  orderByKey,
   query,
   ref,
   set,
