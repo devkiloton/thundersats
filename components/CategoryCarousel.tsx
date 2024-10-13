@@ -1,7 +1,6 @@
 import { FC } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { Chip, useTheme } from "react-native-paper";
-import { CategoriesEnum } from "../constants/categories";
 
 type CategoryCarouselProps = {
   categories: Array<{ name: string; icon: string }>;
