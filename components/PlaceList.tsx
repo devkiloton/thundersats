@@ -1,56 +1,23 @@
-import { useEffect, useState } from "react";
-import { firebaseClient, Place } from "../clients/firebase";
+import { Place } from "../clients/firebase";
 import { FlatList, View } from "react-native";
-import { Card, Text, Icon } from "react-native-paper";
-import { CategoriesEnum } from "../constants/categories";
+import { Card, Text, Icon, IconButton } from "react-native-paper";
 import { AcceptedCoins } from "./AcceptedCoins";
 import { googleMapsClient } from "../clients/google-maps";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 type PlaceListProps = {
-  children: React.ComponentType<any> | React.ReactElement | null;
-  category: CategoriesEnum | null;
+  children?: React.ComponentType<any> | React.ReactElement | null;
+  onEndReached?: () => void;
+  places: (Place & { id: string })[];
 };
 
-export const PlaceList = ({ children, category }: PlaceListProps) => {
-  const [places, setPlaces] = useState<(Place & { id: string })[]>([]);
-  const [paginationLimit, setPaginationLimit] = useState({
-    base: 8,
-    increment: 1,
-  });
+export const PlaceList = ({
+  children,
+  places,
+  onEndReached,
+}: PlaceListProps) => {
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
-
-  const updatePlaces = () => {
-    firebaseClient()
-      .places.query({
-        limit: paginationLimit.base,
-        page: paginationLimit.increment,
-        category,
-      })
-      .then((placesFirebase) => {
-        if (placesFirebase == null) return;
-
-        const placesWithId = Object.entries(placesFirebase)
-          .filter(([key]) => !places.find((place) => place.id === key))
-          .map(([id, place]) => ({ ...place, id }));
-        setPlaces([...places, ...placesWithId]);
-      });
-
-    setPaginationLimit({
-      base: paginationLimit.base,
-      increment: paginationLimit.increment + 1,
-    });
-  };
-
-  useEffect(() => {
-    setPlaces([]);
-    setPaginationLimit({
-      base: 8,
-      increment: 1,
-    });
-    updatePlaces();
-  }, [category]);
 
   return (
     <FlatList
@@ -65,9 +32,10 @@ export const PlaceList = ({ children, category }: PlaceListProps) => {
       showsVerticalScrollIndicator={false}
       onEndReachedThreshold={0.25}
       data={places}
-      onEndReached={updatePlaces}
+      onEndReached={onEndReached}
       renderItem={({ item: place }) => (
         <Card
+          key={place.id}
           contentStyle={{
             display: "flex",
             flexDirection: "column",
@@ -123,6 +91,12 @@ export const PlaceList = ({ children, category }: PlaceListProps) => {
               </View>
               <AcceptedCoins place={place} />
             </View>
+            <IconButton
+              icon="bookmark-outline"
+              style={{ position: "absolute", right: 0, bottom: -2 }}
+              size={20}
+              onPress={() => console.log("Pressed")}
+            />
           </Card.Content>
         </Card>
       )}
