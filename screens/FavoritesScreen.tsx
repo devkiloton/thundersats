@@ -23,22 +23,24 @@ export const FavoritesScreen = observer(() => {
   );
 
   return (
-    <View>
+    <View
+      style={{
+        marginBottom: 40,
+      }}
+    >
       <Appbar.Header mode="small" elevated>
         <Appbar.BackAction onPress={navigation.goBack} />
         <Appbar.Content title="Favorites" />
       </Appbar.Header>
-      <View>
-        <PlaceList places={filteredPlaces}>
-          <View style={{ paddingTop: 16 }}>
-            <CategoryCarousel
-              categories={categories}
-              activeCategory={category}
-              onChange={setCategory}
-            />
-          </View>
-        </PlaceList>
-      </View>
+      <PlaceList places={filteredPlaces}>
+        <View style={{ paddingTop: 16 }}>
+          <CategoryCarousel
+            categories={categories}
+            activeCategory={category}
+            onChange={setCategory}
+          />
+        </View>
+      </PlaceList>
     </View>
   );
 });
