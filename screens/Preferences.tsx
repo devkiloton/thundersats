@@ -23,10 +23,6 @@ export const Preferences = () => {
     const auth = getAuth();
     await signOut(auth);
     setLogoutDialogVisible(false);
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Welcome" }],
-    });
   };
 
   const handleDeleteAccount = async () => {
@@ -36,7 +32,6 @@ export const Preferences = () => {
     setDeleteAccountDialogVisible(false);
     if (user) {
       await deleteUser(user);
-      navigation.reset({ index: 0, routes: [{ name: "Welcome" }] });
     }
   };
 
@@ -62,6 +57,21 @@ export const Preferences = () => {
           left={() => (
             <List.Icon color={MD3Colors.error50} icon="sign-caution" />
           )}
+        />
+      </List.Section>
+      <List.Section>
+        <List.Subheader>Legal</List.Subheader>
+        <List.Item
+          style={styles.item}
+          onPress={() => console.log("Privacy Policy")}
+          title="Privacy Policy"
+          left={() => <List.Icon icon="security" />}
+        />
+        <List.Item
+          style={styles.item}
+          onPress={() => console.log("Terms of Service")}
+          title="Terms of Service"
+          left={() => <List.Icon icon="newspaper-variant-outline" />}
         />
       </List.Section>
 
