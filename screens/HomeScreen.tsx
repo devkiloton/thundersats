@@ -66,7 +66,10 @@ export const HomeScreen = () => {
           size={8}
           style={{ position: "absolute", top: 24, right: 32, zIndex: 10 }}
         />
-        <Appbar.Action icon="bell-outline" onPress={() => {}} />
+        <Appbar.Action
+          icon="bell-outline"
+          onPress={() => navigation.navigate("Notifications")}
+        />
       </Appbar.Header>
       <PlaceList places={places} onEndReached={updatePlacesList}>
         <View style={styles.container}>
