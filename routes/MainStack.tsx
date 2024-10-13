@@ -1,20 +1,53 @@
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  StackNavigationProp,
+} from "@react-navigation/stack";
 import { MapScreen } from "../screens/MapScreen";
 import { WelcomeScreen } from "../screens/WelcomeScreen";
 import { MainTab } from "./MainTab";
 import { PlaceScreen } from "../screens/PlaceScreen";
 import { FavoritesScreen } from "../screens/FavoritesScreen";
+import { NotificationsScreen } from "../screens/NotificationsScreen";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useState } from "react";
+import { ParamListBase, useNavigation } from "@react-navigation/native";
+import { LoadScreen } from "../screens/LoadScreen";
 
 const Stack = createStackNavigator();
 
 export const MainStack = () => {
+  const [user, setUser] = useState<boolean | null>(null);
+  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
+
+  onAuthStateChanged(getAuth(), (user) => {
+    if (user) {
+      setUser(true);
+      navigation.navigate("Home Tab");
+    } else {
+      setUser(false);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Welcome" }],
+      });
+    }
+  });
+
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name="Welcome"
-        component={WelcomeScreen}
-      />
+      {user === null && (
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Decision"
+          component={LoadScreen}
+        />
+      )}
+      {!user && (
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Welcome"
+          component={WelcomeScreen}
+        />
+      )}
       <Stack.Screen
         options={{ headerShown: false }}
         name="Home Tab"
@@ -34,6 +67,11 @@ export const MainStack = () => {
         options={{ headerShown: false }}
         name="Place"
         component={PlaceScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Notifications"
+        component={NotificationsScreen}
       />
     </Stack.Navigator>
   );
