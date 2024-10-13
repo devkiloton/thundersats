@@ -69,20 +69,13 @@ export const HomeScreen = () => {
         <Appbar.Action icon="bell-outline" onPress={() => {}} />
       </Appbar.Header>
       <PlaceList places={places} onEndReached={updatePlacesList}>
-        <>
-          <View
-            style={{
-              ...styles.container,
-              backgroundColor: theme.colors.background,
-            }}
-          >
-            <CategoryCarousel
-              categories={categories}
-              activeCategory={category}
-              onChange={setCategory}
-            />
-          </View>
-        </>
+        <View style={styles.container}>
+          <CategoryCarousel
+            categories={categories}
+            activeCategory={category}
+            onChange={setCategory}
+          />
+        </View>
       </PlaceList>
     </View>
   );
@@ -92,7 +85,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 16,
-    paddingBottom: 8,
     gap: 12,
   },
   header: {

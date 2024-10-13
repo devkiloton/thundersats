@@ -10,27 +10,33 @@ import {
   Appbar,
 } from "react-native-paper";
 import { deleteUser, getAuth, signOut } from "firebase/auth";
-import { useNavigation } from "@react-navigation/native";
+import { ParamListBase, useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 export const Preferences = () => {
   const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
   const [isDeleteAccountDialogVisible, setDeleteAccountDialogVisible] =
     useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
 
   const handleLogout = async () => {
     const auth = getAuth();
     await signOut(auth);
-    navigation.reset({ index: 0, routes: [] });
+    setLogoutDialogVisible(false);
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Welcome" }],
+    });
   };
 
   const handleDeleteAccount = async () => {
     const auth = getAuth();
 
     const user = auth.currentUser;
+    setDeleteAccountDialogVisible(false);
     if (user) {
       await deleteUser(user);
-      navigation.reset({ index: 0, routes: [] });
+      navigation.reset({ index: 0, routes: [{ name: "Welcome" }] });
     }
   };
 

@@ -5,6 +5,9 @@ import { AcceptedCoins } from "./AcceptedCoins";
 import { googleMapsClient } from "../clients/google-maps";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useFavoriteStore } from "../stores/FavoritesStore";
+import { useEffect } from "react";
+import { observer } from "mobx-react-lite";
 
 type PlaceListProps = {
   children?: React.ComponentType<any> | React.ReactElement | null;
@@ -12,95 +15,114 @@ type PlaceListProps = {
   places: (Place & { id: string })[];
 };
 
-export const PlaceList = ({
-  children,
-  places,
-  onEndReached,
-}: PlaceListProps) => {
-  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
+export const PlaceList = observer(
+  ({ children, places, onEndReached }: PlaceListProps) => {
+    const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
+    const favoritesStore = useFavoriteStore();
 
-  return (
-    <FlatList
-      contentContainerStyle={{
-        gap: 12,
-        paddingBottom: 150,
-        paddingHorizontal: 16,
-      }}
-      ListHeaderComponent={children}
-      style={{ borderRadius: 16 }}
-      scrollEnabled={true}
-      showsVerticalScrollIndicator={false}
-      onEndReachedThreshold={0.25}
-      data={places}
-      onEndReached={onEndReached}
-      renderItem={({ item: place }) => (
-        <Card
-          key={place.id}
-          contentStyle={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-          onPress={() => navigation.navigate("Place Home", { place })}
-          style={{ shadowOpacity: 0 }}
-        >
-          <Card.Cover
-            source={{
-              uri: googleMapsClient.urls.photos({
-                photoReference: place.coverPhotoReference,
-                maxWidth: 400,
-              }),
-            }}
-            style={{ height: 150 }}
-          />
-          <Card.Content
-            style={{
+    useEffect(() => {
+      favoritesStore.get();
+    }, []);
+
+    const Rendered = observer(
+      ({ place }: { place: Place & { id: string } }) => {
+        const isFavorite = favoritesStore.favorites.ids.includes(place.id);
+        const bookMarkIcon = isFavorite ? "bookmark" : "bookmark-outline";
+        return (
+          <Card
+            key={place.id}
+            contentStyle={{
               display: "flex",
-              justifyContent: "space-between",
               flexDirection: "column",
-              paddingVertical: 8,
-              gap: 4,
             }}
+            onPress={() => navigation.navigate("Place Home", { place })}
+            style={{ shadowOpacity: 0 }}
           >
-            <Text ellipsizeMode="tail" numberOfLines={1} variant="titleMedium">
-              {place.name}
-            </Text>
-            <Text ellipsizeMode="tail" numberOfLines={1} variant="bodySmall">
-              {place.address}
-            </Text>
-            <View
+            <Card.Cover
+              source={{
+                uri: googleMapsClient.urls.photos({
+                  photoReference: place.coverPhotoReference,
+                  maxWidth: 400,
+                }),
+              }}
+              style={{ height: 150 }}
+            />
+            <Card.Content
               style={{
                 display: "flex",
-                flexDirection: "row",
-                gap: 8,
+                justifyContent: "space-between",
+                flexDirection: "column",
+                paddingVertical: 8,
+                gap: 4,
               }}
             >
+              <Text
+                ellipsizeMode="tail"
+                numberOfLines={1}
+                variant="titleMedium"
+              >
+                {place.name}
+              </Text>
+              <Text ellipsizeMode="tail" numberOfLines={1} variant="bodySmall">
+                {place.address}
+              </Text>
               <View
                 style={{
                   display: "flex",
                   flexDirection: "row",
+                  gap: 8,
                 }}
               >
-                <Icon size={16} source={"star"} color="orange" />
-                <Text
-                  ellipsizeMode="tail"
-                  numberOfLines={1}
-                  variant="bodySmall"
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
                 >
-                  {place.rating}
-                </Text>
+                  <Icon size={16} source={"star"} color="orange" />
+                  <Text
+                    ellipsizeMode="tail"
+                    numberOfLines={1}
+                    variant="bodySmall"
+                  >
+                    {place.rating}
+                  </Text>
+                </View>
+                <AcceptedCoins place={place} />
               </View>
-              <AcceptedCoins place={place} />
-            </View>
-            <IconButton
-              icon="bookmark-outline"
-              style={{ position: "absolute", right: 0, bottom: -2 }}
-              size={20}
-              onPress={() => console.log("Pressed")}
-            />
-          </Card.Content>
-        </Card>
-      )}
-      keyExtractor={(item) => item.id}
-    />
-  );
-};
+              <IconButton
+                icon={bookMarkIcon}
+                style={{ position: "absolute", right: 0, bottom: -2 }}
+                size={20}
+                onPress={() =>
+                  isFavorite
+                    ? favoritesStore.delete(place.id)
+                    : favoritesStore.create(place.id)
+                }
+              />
+            </Card.Content>
+          </Card>
+        );
+      }
+    );
+
+    return (
+      <FlatList
+        contentContainerStyle={{
+          gap: 12,
+          paddingBottom: 150,
+          paddingHorizontal: 16,
+        }}
+        ListHeaderComponent={children}
+        style={{ borderRadius: 16 }}
+        scrollEnabled={true}
+        showsVerticalScrollIndicator={false}
+        onEndReachedThreshold={0.25}
+        data={places}
+        onEndReached={onEndReached}
+        renderItem={({ item }) => <Rendered place={item} />}
+        keyExtractor={(item) => item.id}
+      />
+    );
+  }
+);
