@@ -219,8 +219,11 @@ export const Map = observer(() => {
           { useNativeDriver: false }
         )}
       >
-        {places.map((place) => {
-          const isFavorite = favoritesStore.favorites.ids.includes(place.id);
+        {places.map((place, index) => {
+          const isFavorite = favoritesStore.favorites.places.find(
+            (favoritePlace) =>
+              favoritePlace.locationIdGoogle === place.locationIdGoogle
+          );
           const bookMarkIcon = isFavorite ? "bookmark" : "bookmark-outline";
           return (
             <Card
@@ -245,8 +248,8 @@ export const Map = observer(() => {
                   size={20}
                   onPress={() =>
                     isFavorite
-                      ? favoritesStore.delete(place.id)
-                      : favoritesStore.create(place.id)
+                      ? favoritesStore.delete(place)
+                      : favoritesStore.create(place)
                   }
                 />
               </Card.Content>
