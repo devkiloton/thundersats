@@ -12,6 +12,9 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useState } from "react";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { LoadScreen } from "../screens/LoadScreen";
+import { VerifyScreen } from "../screens/VerifyScreen";
+import { ChangePasswordScreen } from "../screens/ChangePasswordScreen";
+import { CreateAccountScreen } from "../screens/CreateAccountScreen";
 
 const Stack = createStackNavigator();
 
@@ -48,6 +51,21 @@ export const MainStack = () => {
           component={WelcomeScreen}
         />
       )}
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Create Account"
+        component={CreateAccountScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Change Password"
+        component={ChangePasswordScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Verify"
+        component={VerifyScreen}
+      />
       <Stack.Screen
         options={{ headerShown: false }}
         name="Home Tab"
