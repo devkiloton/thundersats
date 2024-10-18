@@ -7,9 +7,11 @@ import { useFavoriteStore } from "../stores/FavoritesStore";
 export const PlaceScreen = observer(() => {
   const navigation = useNavigation();
   const { params } = useRoute();
-  const { place } = params as { place: Place & { id: string } };
+  const { place } = params as { place: Place };
   const favoritesStore = useFavoriteStore();
-  const isFavorite = favoritesStore.favorites.ids.includes(place.id);
+  const isFavorite = favoritesStore.favorites.places.find(
+    (favoritePlace) => favoritePlace.locationIdGoogle === place.locationIdGoogle
+  );
   const bookMarkIcon = isFavorite ? "bookmark" : "bookmark-outline";
 
   return (
@@ -20,8 +22,8 @@ export const PlaceScreen = observer(() => {
         icon={bookMarkIcon}
         onPress={() =>
           isFavorite
-            ? favoritesStore.delete(place.id)
-            : favoritesStore.create(place.id)
+            ? favoritesStore.delete(place)
+            : favoritesStore.create(place)
         }
       />
     </Appbar.Header>
