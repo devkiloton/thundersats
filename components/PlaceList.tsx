@@ -12,7 +12,7 @@ import { observer } from "mobx-react-lite";
 type PlaceListProps = {
   children?: React.ComponentType<any> | React.ReactElement | null;
   onEndReached?: () => void;
-  places: (Place & { id: string })[];
+  places: Place[];
 };
 
 export const PlaceList = observer(
@@ -24,87 +24,84 @@ export const PlaceList = observer(
       favoritesStore.get();
     }, []);
 
-    const Rendered = observer(
-      ({ place }: { place: Place & { id: string } }) => {
-        const isFavorite = favoritesStore.favorites.ids.includes(place.id);
-        const bookMarkIcon = isFavorite ? "bookmark" : "bookmark-outline";
-        return (
-          <Card
-            key={place.id}
-            contentStyle={{
-              display: "flex",
-              flexDirection: "column",
+    const Rendered = observer(({ place }: { place: Place }) => {
+      const isFavorite = favoritesStore.favorites.places.find(
+        (favoritePlace) =>
+          favoritePlace.locationIdGoogle === place.locationIdGoogle
+      );
+      const bookMarkIcon = isFavorite ? "bookmark" : "bookmark-outline";
+      return (
+        <Card
+          key={place.locationIdGoogle}
+          contentStyle={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+          onPress={() => navigation.navigate("Place Home", { place })}
+          style={{ shadowOpacity: 0 }}
+        >
+          <Card.Cover
+            source={{
+              uri: googleMapsClient.urls.photos({
+                photoReference: place.coverPhotoReference,
+                maxWidth: 400,
+              }),
             }}
-            onPress={() => navigation.navigate("Place Home", { place })}
-            style={{ shadowOpacity: 0 }}
+            style={{ height: 150 }}
+          />
+          <Card.Content
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: "column",
+              paddingVertical: 8,
+              gap: 4,
+            }}
           >
-            <Card.Cover
-              source={{
-                uri: googleMapsClient.urls.photos({
-                  photoReference: place.coverPhotoReference,
-                  maxWidth: 400,
-                }),
-              }}
-              style={{ height: 150 }}
-            />
-            <Card.Content
+            <Text ellipsizeMode="tail" numberOfLines={1} variant="titleMedium">
+              {place.name}
+            </Text>
+            <Text ellipsizeMode="tail" numberOfLines={1} variant="bodySmall">
+              {place.address}
+            </Text>
+            <View
               style={{
                 display: "flex",
-                justifyContent: "space-between",
-                flexDirection: "column",
-                paddingVertical: 8,
-                gap: 4,
+                flexDirection: "row",
+                gap: 8,
               }}
             >
-              <Text
-                ellipsizeMode="tail"
-                numberOfLines={1}
-                variant="titleMedium"
-              >
-                {place.name}
-              </Text>
-              <Text ellipsizeMode="tail" numberOfLines={1} variant="bodySmall">
-                {place.address}
-              </Text>
               <View
                 style={{
                   display: "flex",
                   flexDirection: "row",
-                  gap: 8,
                 }}
               >
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                  }}
+                <Icon size={16} source={"star"} color="orange" />
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  variant="bodySmall"
                 >
-                  <Icon size={16} source={"star"} color="orange" />
-                  <Text
-                    ellipsizeMode="tail"
-                    numberOfLines={1}
-                    variant="bodySmall"
-                  >
-                    {place.rating}
-                  </Text>
-                </View>
-                <AcceptedCoins place={place} />
+                  {place.rating}
+                </Text>
               </View>
-              <IconButton
-                icon={bookMarkIcon}
-                style={{ position: "absolute", right: 0, bottom: -2 }}
-                size={20}
-                onPress={() =>
-                  isFavorite
-                    ? favoritesStore.delete(place.id)
-                    : favoritesStore.create(place.id)
-                }
-              />
-            </Card.Content>
-          </Card>
-        );
-      }
-    );
+              <AcceptedCoins place={place} />
+            </View>
+            <IconButton
+              icon={bookMarkIcon}
+              style={{ position: "absolute", right: 0, bottom: -2 }}
+              size={20}
+              onPress={() =>
+                isFavorite
+                  ? favoritesStore.delete(place)
+                  : favoritesStore.create(place)
+              }
+            />
+          </Card.Content>
+        </Card>
+      );
+    });
 
     return (
       <FlatList
@@ -121,7 +118,7 @@ export const PlaceList = observer(
         data={places}
         onEndReached={onEndReached}
         renderItem={({ item }) => <Rendered place={item} />}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.locationIdGoogle}
       />
     );
   }
