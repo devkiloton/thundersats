@@ -8,9 +8,12 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { PlaceList } from "../components/PlaceList";
 import { CategoriesEnum } from "../constants/categories";
 import { firebaseClient, Place } from "../clients/firebase";
+import { useNotificationsStore } from "../stores/NotificationsStore";
+import { observer } from "mobx-react-lite";
 
-export const HomeScreen = () => {
+export const HomeScreen = observer(() => {
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
+  const notificationsStore = useNotificationsStore();
   const [category, setCategory] = useState<CategoriesEnum | null>(null);
   const [paginationLimit, setPaginationLimit] = useState({
     base: 8,
@@ -47,6 +50,7 @@ export const HomeScreen = () => {
       increment: 1,
     });
     updatePlacesList();
+    notificationsStore.get();
   }, [category]);
 
   return (
@@ -61,10 +65,16 @@ export const HomeScreen = () => {
           icon="bookmark-outline"
           onPress={() => navigation.navigate("Favorites")}
         />
-        <Badge
-          size={8}
-          style={{ position: "absolute", top: 24, right: 32, zIndex: 10 }}
-        />
+        {notificationsStore.notifications.dateLastNotificationSeen &&
+          notificationsStore.notifications.allNotifications?.[0]?.createdAt
+            ?.seconds >
+            notificationsStore.notifications.dateLastNotificationSeen && (
+            <Badge
+              size={8}
+              style={{ position: "absolute", top: 24, right: 32, zIndex: 10 }}
+            />
+          )}
+
         <Appbar.Action
           icon="bell-outline"
           onPress={() => navigation.navigate("Notifications")}
@@ -81,7 +91,7 @@ export const HomeScreen = () => {
       </PlaceList>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

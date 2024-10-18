@@ -8,6 +8,8 @@ import {
   query,
   limit,
   getDocs,
+  serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 import { CategoriesEnum } from "../constants/categories";
 import { getAuth } from "firebase/auth";
@@ -54,7 +56,7 @@ export const firebaseClient = () => {
     },
     notifications: {
       updateMetadata: async (metadata: {
-        dateLastNotificationSeen: number;
+        dateLastNotificationSeen: Timestamp;
       }) => {
         const uid = getAuth().currentUser?.uid;
         if (!uid) return;
@@ -63,7 +65,9 @@ export const firebaseClient = () => {
         const docRef = doc(firestore, "private_notification", uid);
         await setDoc(docRef, metadata, { merge: true });
       },
-      aggregateNotifications: async () => {
+      aggregateNotifications: async (): Promise<
+        AggregatedNotifications | undefined
+      > => {
         const firestore = getFirestore();
 
         const uid = getAuth().currentUser?.uid;
@@ -75,24 +79,24 @@ export const firebaseClient = () => {
         const private_notifications = getDocs(
           collection(firestore, "private_notification", uid, "notification")
         );
-
-        const allNotifications = await Promise.all([
-          globalNotifications,
-          private_notifications,
-        ]);
-
         const dateLastNotificationSeen = getDoc(
           doc(firestore, "private_notification", uid)
         ).then((doc) => doc.data()?.dateLastNotificationSeen);
 
-        return {
-          globalNotifications: allNotifications[0].docs.map((doc) =>
-            doc.data()
-          ),
-          privateNotifications: allNotifications[1].docs.map((doc) =>
-            doc.data()
-          ),
+        const allNotifications = await Promise.all([
+          globalNotifications,
+          private_notifications,
           dateLastNotificationSeen,
+        ]);
+
+        return {
+          globalNotifications: allNotifications[0].docs.map(
+            (doc) => doc.data() as Notification
+          ),
+          privateNotifications: allNotifications[1].docs.map(
+            (doc) => doc.data() as Notification
+          ),
+          dateLastNotificationSeen: allNotifications[2],
         };
       },
     },
@@ -175,7 +179,7 @@ const _getQueryConstraints = ({
     return query(
       collection(firestore, "places"),
       where("category", "==", category),
-      where("isVerified", ">", 0),
+      where("isVerified", "==", true),
       limit(limitResults * page)
     );
   }
@@ -194,7 +198,7 @@ const _getQueryConstraints = ({
 
   return query(
     collection(firestore, "places"),
-    where("isVerified", ">", 0),
+    where("isVerified", "==", true),
     limit(limitResults * page)
   );
 };
@@ -225,3 +229,21 @@ interface Location {
   lat: number;
   lng: number;
 }
+
+type AggregatedNotifications = {
+  globalNotifications: Notification[];
+  privateNotifications: Notification[];
+  dateLastNotificationSeen: FirebaseTimestamp;
+};
+
+export type Notification = {
+  createdAt: FirebaseTimestamp;
+  subject: string;
+  isInteractive: boolean;
+  message: string;
+};
+
+type FirebaseTimestamp = {
+  seconds: number;
+  nanoseconds: number;
+};
