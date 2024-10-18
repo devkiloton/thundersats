@@ -1,37 +1,19 @@
-import { Button, TextInput } from "react-native-paper";
-import {
-  createUserWithEmailAndPassword,
-  getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
+import { Button, MD3Colors, Text, TextInput } from "react-native-paper";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
-import { SafeAreaView, View } from "react-native";
+import { Image, SafeAreaView, View } from "react-native";
 
 export const WelcomeScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
-  // const email = "xxxx@xxxx.xxx";
-  // const password = "xxxxxx";
+  const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
 
   useEffect(() => {
     Location.requestForegroundPermissionsAsync();
   }, []);
-
-  const createAccount = () => {
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email, password);
-  };
-
-  const signIn = () => {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password);
-  };
 
   return (
     <SafeAreaView
@@ -41,6 +23,14 @@ export const WelcomeScreen = () => {
         gap: 12,
       }}
     >
+      <Image
+        source={require("../assets/logo.jpg")}
+        style={{
+          alignSelf: "center",
+          width: 100,
+          height: 100,
+        }}
+      />
       <TextInput
         mode="outlined"
         label="Email"
@@ -78,7 +68,10 @@ export const WelcomeScreen = () => {
           justifyContent: "space-between",
         }}
       >
-        <Button style={{ marginHorizontal: 16 }} onPress={() => {}}>
+        <Button
+          style={{ marginHorizontal: 16 }}
+          onPress={() => navigation.navigate("Change Password")}
+        >
           Change password
         </Button>
         <Button
@@ -89,7 +82,7 @@ export const WelcomeScreen = () => {
           contentStyle={{
             flexDirection: "row-reverse",
           }}
-          onPress={() => signIn()}
+          onPress={() => navigation.navigate("Verify", { email, password })}
           icon={"login"}
         >
           Sign in
@@ -98,10 +91,40 @@ export const WelcomeScreen = () => {
       <Button
         mode="contained-tonal"
         style={{ marginHorizontal: 16 }}
-        onPress={() => createAccount()}
+        onPress={() => navigation.navigate("Create Account")}
       >
         Create account
       </Button>
+      <Text
+        style={{
+          marginHorizontal: 16,
+          alignSelf: "center",
+          textAlign: "center",
+          position: "absolute",
+          bottom: 90,
+        }}
+        variant="bodySmall"
+      >
+        When creating an account you agree with our{" "}
+        <Text
+          role="button"
+          style={{
+            color: MD3Colors.primary50,
+          }}
+        >
+          terms of service
+        </Text>{" "}
+        &{" "}
+        <Text
+          role="button"
+          style={{
+            color: MD3Colors.primary50,
+          }}
+        >
+          privacy policy
+        </Text>
+        .
+      </Text>
     </SafeAreaView>
   );
 };
