@@ -1,6 +1,6 @@
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
-import { Appbar, Badge, FAB, useTheme } from "react-native-paper";
+import { Appbar, Badge } from "react-native-paper";
 import { categories } from "../constants/categories";
 import { CategoryCarousel } from "../components/CategoryCarousel";
 import { useEffect, useState } from "react";
@@ -10,7 +10,6 @@ import { CategoriesEnum } from "../constants/categories";
 import { firebaseClient, Place } from "../clients/firebase";
 
 export const HomeScreen = () => {
-  const theme = useTheme();
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
   const [category, setCategory] = useState<CategoriesEnum | null>(null);
   const [paginationLimit, setPaginationLimit] = useState({

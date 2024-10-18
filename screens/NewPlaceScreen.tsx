@@ -22,6 +22,7 @@ import { QueryPlaceResults } from "../components/QueryPlaceResults";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
+import { getAuth } from "firebase/auth";
 
 export const NewPlaceScreen = () => {
   const theme = useTheme();
@@ -116,6 +117,13 @@ export const NewPlaceScreen = () => {
       return;
     }
 
+    const uid = getAuth().currentUser?.uid;
+
+    if (uid == null) {
+      console.error("User is not logged in!");
+      return;
+    }
+
     firebaseClient().places.create({
       hasBitcoin,
       hasCryptos,
@@ -137,6 +145,10 @@ export const NewPlaceScreen = () => {
         selectedPlaceDetails?.result.wheelchair_accessible_entrance ?? null,
       coverPhotoReference:
         selectedPlaceDetails?.result.photos?.[0]?.photo_reference ?? null,
+      isVerified: false,
+      submittedBy: uid,
+      createdAt: Date.now(),
+      views: 1,
     });
     navigation.goBack();
   };
