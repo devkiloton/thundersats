@@ -1,15 +1,14 @@
 import {
-  endAt,
-  equalTo,
-  get,
-  getDatabase,
-  limitToFirst,
-  orderByChild,
+  collection,
+  doc,
+  getDoc,
+  getFirestore,
+  setDoc,
+  where,
   query,
-  ref,
-  set,
-  startAt,
-} from "firebase/database";
+  limit,
+  getDocs,
+} from "firebase/firestore";
 import { CategoriesEnum } from "../constants/categories";
 import { getAuth } from "firebase/auth";
 import { getFunctions, httpsCallable } from "firebase/functions";
@@ -18,28 +17,111 @@ import { app } from "../hooks/firebase";
 export const firebaseClient = () => {
   return {
     favorites: {
-      create: async (placeId: string) => {
-        const db = getDatabase();
+      create: async (place: Place) => {
         const uid = getAuth().currentUser?.uid;
-        set(ref(db, "favorites/" + `${uid}/` + placeId), true);
-      },
-      delete: async (placeId: string) => {
-        const db = getDatabase();
-        const uid = getAuth().currentUser?.uid;
-        set(ref(db, "favorites/" + `${uid}/` + placeId), null);
-      },
-      get: async () => {
-        const functions = getFunctions(app(), "europe-west3");
-        const favoritePlaces = httpsCallable(functions, "getFavoritePlaces");
-        return favoritePlaces().then(
-          (result) => result.data as Record<string, Place>
+        if (!uid) return;
+
+        const firestore = getFirestore();
+        const docRef = doc(firestore, "favorites", uid);
+        await setDoc(
+          docRef,
+          { [place.locationIdGoogle]: place },
+          { merge: true }
         );
+      },
+      delete: async (place: Place) => {
+        const uid = getAuth().currentUser?.uid;
+        if (!uid) return;
+
+        // Write in the firestore
+        const firestore = getFirestore();
+        const docRef = doc(firestore, "favorites", uid);
+        await setDoc(
+          docRef,
+          { [place.locationIdGoogle]: null },
+          { merge: true }
+        );
+      },
+      get: async (): Promise<Record<string, Place>> => {
+        const uid = getAuth().currentUser?.uid;
+        if (!uid) return {};
+
+        const firestore = getFirestore();
+        const docRef = doc(firestore, "favorites", uid);
+        const docSnap = await getDoc(docRef);
+        return docSnap.data() as Record<string, Place>;
+      },
+    },
+    notifications: {
+      updateMetadata: async (metadata: {
+        dateLastNotificationSeen: number;
+      }) => {
+        const uid = getAuth().currentUser?.uid;
+        if (!uid) return;
+
+        const firestore = getFirestore();
+        const docRef = doc(firestore, "private_notification", uid);
+        await setDoc(docRef, metadata, { merge: true });
+      },
+      aggregateNotifications: async () => {
+        const firestore = getFirestore();
+
+        const uid = getAuth().currentUser?.uid;
+        if (!uid) return;
+
+        const globalNotifications = getDocs(
+          collection(firestore, "global_notification")
+        );
+        const private_notifications = getDocs(
+          collection(firestore, "private_notification", uid, "notification")
+        );
+
+        const allNotifications = await Promise.all([
+          globalNotifications,
+          private_notifications,
+        ]);
+
+        const dateLastNotificationSeen = getDoc(
+          doc(firestore, "private_notification", uid)
+        ).then((doc) => doc.data()?.dateLastNotificationSeen);
+
+        return {
+          globalNotifications: allNotifications[0].docs.map((doc) =>
+            doc.data()
+          ),
+          privateNotifications: allNotifications[1].docs.map((doc) =>
+            doc.data()
+          ),
+          dateLastNotificationSeen,
+        };
+      },
+    },
+    codes: {
+      send: async (email: string) => {
+        const functions = getFunctions(app(), "europe-west3");
+        const sendCode = httpsCallable<unknown, { docId: string }>(
+          functions,
+          "sendCode"
+        );
+        return await sendCode({
+          email,
+        });
+      },
+      confirm: async ({ code, codeId }: { code: string; codeId: string }) => {
+        const functions = getFunctions(app(), "europe-west3");
+        const confirmCode = httpsCallable(functions, "confirmCode");
+        return confirmCode({
+          code,
+          codeId,
+        }).then((result) => result.data as boolean);
       },
     },
     places: {
       create: async (place: Place) => {
-        const db = getDatabase();
-        set(ref(db, "places/" + place.locationIdGoogle), place);
+        // Write in the firestore
+        const firestore = getFirestore();
+        const docRef = doc(firestore, "places", place.locationIdGoogle);
+        await setDoc(docRef, place);
       },
       /**
        * The start can be a number or uid
@@ -55,34 +137,22 @@ export const firebaseClient = () => {
         category?: CategoriesEnum | null;
         bbox?: number[] | null;
       }) => {
-        const db = getDatabase();
-        const reference = ref(db, "places");
         const queryConstraint = _getQueryConstraints({
           category,
           bbox,
-          limit,
+          limitResults: limit,
           page,
-          reference,
         });
 
-        // TODO: Learn to paginate with Firebase realtime database
-        const snapshot = await get(queryConstraint);
-        snapshot.val() as Record<string, Place> | null;
+        const querySnapshot = await getDocs(queryConstraint);
+        const querySnapshotEntries = querySnapshot.docs
+          .filter((v) => v.data().isVerified)
+          .map((doc) => [doc.data().locationIdGoogle, doc.data()]);
 
-        if (!snapshot.exists()) return null;
-
-        if (!bbox) return snapshot.val() as Record<string, Place>;
-
-        if (bbox) {
-          const places = snapshot.val() as Record<string, Place>;
-          // Filtering lat since Firebase doesn't support multiple orderByChild
-          const filteredLat = Object.entries(places).filter(([, place]) => {
-            return (
-              place.location.lat >= bbox[1] && place.location.lat <= bbox[3]
-            );
-          });
-          return Object.fromEntries(filteredLat) as Record<string, Place>;
-        }
+        return Object.fromEntries(querySnapshotEntries) as Record<
+          string,
+          Place
+        >;
       },
     },
   };
@@ -91,33 +161,42 @@ export const firebaseClient = () => {
 const _getQueryConstraints = ({
   category,
   bbox,
-  limit,
+  limitResults,
   page,
-  reference,
 }: {
   category: CategoriesEnum | null;
   bbox: number[] | null;
-  limit: number;
-  page: number;
-  reference: any;
+  limitResults?: number;
+  page?: number;
 }) => {
-  if (category)
+  const firestore = getFirestore();
+
+  if (category && limitResults && page) {
     return query(
-      reference,
-      orderByChild("category"),
-      equalTo(category),
-      limitToFirst(limit * page)
+      collection(firestore, "places"),
+      where("category", "==", category),
+      where("isVerified", ">", 0),
+      limit(limitResults * page)
     );
+  }
 
   if (bbox)
     return query(
-      reference,
-      orderByChild("location/lng"),
-      startAt(bbox[0]),
-      endAt(bbox[2])
+      collection(firestore, "places"),
+      where("location.lat", ">=", bbox[1]),
+      where("location.lat", "<=", bbox[3]),
+      where("location.lng", ">=", bbox[0]),
+      where("location.lng", "<=", bbox[2])
     );
 
-  return query(reference, limitToFirst(limit * page));
+  if (!limitResults || !page)
+    return query(collection(firestore, "places"), where("isVerified", ">", 0));
+
+  return query(
+    collection(firestore, "places"),
+    where("isVerified", ">", 0),
+    limit(limitResults * page)
+  );
 };
 
 export interface Place {
@@ -136,6 +215,10 @@ export interface Place {
   priceLevel: number | undefined | null;
   wheelchairAccessibleEntrance: boolean | undefined | null;
   coverPhotoReference: string | undefined | null;
+  isVerified: boolean;
+  submittedBy: string;
+  views: number;
+  createdAt: number;
 }
 
 interface Location {

@@ -3,13 +3,11 @@ import { firebaseClient, Place } from "../../clients/firebase";
 
 export class FavoritesStore {
   @observable favorites: {
-    places: (Place & { id: string })[];
-    ids: string[];
+    places: Place[];
     loading: boolean;
     loaded: boolean;
   } = {
     places: [],
-    ids: [],
     loading: false,
     loaded: false,
   };
@@ -18,21 +16,21 @@ export class FavoritesStore {
     makeObservable(this);
   }
 
-  async create(placeId: string) {
+  async create(place: Place) {
     firebaseClient()
-      .favorites.create(placeId)
+      .favorites.create(place)
       .then(() => this.get(true));
     runInAction(() => {
-      this.favorites.ids.push(placeId);
+      this.favorites.places.push(place);
     });
   }
 
-  async delete(placeId: string) {
-    firebaseClient().favorites.delete(placeId);
+  async delete(place: Place) {
+    firebaseClient().favorites.delete(place);
     runInAction(() => {
-      this.favorites.ids = this.favorites.ids.filter((id) => id !== placeId);
       this.favorites.places = this.favorites.places.filter(
-        (place) => place.id !== placeId
+        (favoritePlace) =>
+          favoritePlace.locationIdGoogle !== place.locationIdGoogle
       );
     });
   }
@@ -55,7 +53,6 @@ export class FavoritesStore {
               id,
             })
           );
-          this.favorites.ids = Object.keys(favorites);
           this.favorites.loaded = true;
           this.favorites.loading = false;
         });
