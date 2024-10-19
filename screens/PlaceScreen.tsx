@@ -15,17 +15,19 @@ export const PlaceScreen = observer(() => {
   const bookMarkIcon = isFavorite ? "bookmark" : "bookmark-outline";
 
   return (
-    <Appbar.Header mode="small" elevated>
-      <Appbar.BackAction onPress={navigation.goBack} />
-      <Appbar.Content title={place.name} />
-      <Appbar.Action
-        icon={bookMarkIcon}
-        onPress={() =>
-          isFavorite
-            ? favoritesStore.delete(place)
-            : favoritesStore.create(place)
-        }
-      />
-    </Appbar.Header>
+    <>
+      <Appbar.Header mode="small" elevated>
+        <Appbar.BackAction onPress={navigation.goBack} />
+        <Appbar.Content title={place.name} />
+        <Appbar.Action
+          icon={bookMarkIcon}
+          onPress={() =>
+            isFavorite
+              ? favoritesStore.delete(place)
+              : favoritesStore.create(place)
+          }
+        />
+      </Appbar.Header>
+    </>
   );
 });
