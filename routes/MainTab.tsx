@@ -22,12 +22,12 @@ export const MainTab = () => {
       focusedIcon: "map",
       unfocusedIcon: "map-outline",
     },
-    {
-      key: "wallet",
-      title: "Wallet",
-      focusedIcon: "wallet",
-      unfocusedIcon: "wallet-outline",
-    },
+    // {
+    //   key: "wallet",
+    //   title: "Wallet",
+    //   focusedIcon: "wallet",
+    //   unfocusedIcon: "wallet-outline",
+    // },
     {
       key: "preferences",
       title: "Preferences",
@@ -40,7 +40,7 @@ export const MainTab = () => {
     home: HomeStack,
     explore: MapScreen,
     preferences: Preferences,
-    wallet: WalletScreen,
+    // wallet: WalletScreen,
   });
 
   return (
