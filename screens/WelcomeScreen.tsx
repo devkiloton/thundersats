@@ -4,6 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { Image, SafeAreaView, View } from "react-native";
+import * as Linking from "expo-linking";
 
 export const WelcomeScreen = () => {
   const [email, setEmail] = useState("");
@@ -24,7 +25,7 @@ export const WelcomeScreen = () => {
       }}
     >
       <Image
-        source={require("../assets/logo.jpg")}
+        source={require("../assets/logo.png")}
         style={{
           alignSelf: "center",
           width: 100,
@@ -82,7 +83,11 @@ export const WelcomeScreen = () => {
           contentStyle={{
             flexDirection: "row-reverse",
           }}
-          onPress={() => navigation.navigate("Verify", { email, password })}
+          onPress={() =>
+            email &&
+            password &&
+            navigation.navigate("Verify", { email, password })
+          }
           icon={"login"}
         >
           Sign in
@@ -111,6 +116,7 @@ export const WelcomeScreen = () => {
           style={{
             color: MD3Colors.primary50,
           }}
+          onPress={() => Linking.openURL("https://www.thundersats.com/terms")}
         >
           terms of service
         </Text>{" "}
@@ -120,6 +126,7 @@ export const WelcomeScreen = () => {
           style={{
             color: MD3Colors.primary50,
           }}
+          onPress={() => Linking.openURL("https://www.thundersats.com/privacy")}
         >
           privacy policy
         </Text>

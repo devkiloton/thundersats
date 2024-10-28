@@ -17,7 +17,7 @@ const CARD_WIDTH = width - 64;
 const MARGIN_HORIZONTAL = 8;
 const SNAP_TO_INTERVAL = CARD_WIDTH + MARGIN_HORIZONTAL * 2;
 const CONTENT_INSET = 64 / 2 - MARGIN_HORIZONTAL;
-
+import * as Linking from "expo-linking";
 const LATITUDE_DELTA = 0.006;
 const LONGITUDE_DELTA = 0.006;
 
@@ -228,7 +228,11 @@ export const Map = observer(() => {
           return (
             <Card
               key={place.locationIdGoogle}
-              onPress={() => navigation.navigate("Place", { place })}
+              onPress={() =>
+                Linking.openURL(
+                  `https://www.google.com/maps/search/?api=1&query=${place.location.lat},${place.location.lng}`
+                )
+              }
               style={{
                 width: CARD_WIDTH,
                 marginHorizontal: MARGIN_HORIZONTAL,

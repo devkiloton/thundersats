@@ -8,6 +8,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useFavoriteStore } from "../stores/FavoritesStore";
 import { useEffect } from "react";
 import { observer } from "mobx-react-lite";
+import * as Linking from "expo-linking";
 
 type PlaceListProps = {
   children?: React.ComponentType<any> | React.ReactElement | null;
@@ -37,7 +38,11 @@ export const PlaceList = observer(
             display: "flex",
             flexDirection: "column",
           }}
-          onPress={() => navigation.navigate("Place Home", { place })}
+          onPress={() =>
+            Linking.openURL(
+              `https://www.google.com/maps/search/?api=1&query=${place.location.lat},${place.location.lng}`
+            )
+          }
           style={{ shadowOpacity: 0 }}
         >
           <Card.Cover

@@ -12,6 +12,7 @@ import {
 import { deleteUser, getAuth, signOut } from "firebase/auth";
 import { ParamListBase, useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import * as Linking from "expo-linking";
 
 export const Preferences = () => {
   const [isLogoutDialogVisible, setLogoutDialogVisible] = useState(false);
@@ -63,13 +64,13 @@ export const Preferences = () => {
         <List.Subheader>Legal</List.Subheader>
         <List.Item
           style={styles.item}
-          onPress={() => console.log("Privacy Policy")}
+          onPress={() => Linking.openURL("https://www.thundersats.com/privacy")}
           title="Privacy Policy"
           left={() => <List.Icon icon="security" />}
         />
         <List.Item
           style={styles.item}
-          onPress={() => console.log("Terms of Service")}
+          onPress={() => Linking.openURL("https://www.thundersats.com/terms")}
           title="Terms of Service"
           left={() => <List.Icon icon="newspaper-variant-outline" />}
         />
@@ -105,7 +106,7 @@ export const Preferences = () => {
           <Dialog.Title>Confirm Account Deletion</Dialog.Title>
           <Dialog.Content>
             <Text>
-              You're about to delete your account and it can't be undone
+              You're about to delete your account and it can't be undone.
             </Text>
           </Dialog.Content>
           <Dialog.Actions>
