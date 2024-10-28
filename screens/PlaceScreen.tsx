@@ -1,4 +1,4 @@
-import { Appbar } from "react-native-paper";
+import { Appbar, Card } from "react-native-paper";
 import { Place } from "../clients/firebase";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { observer } from "mobx-react-lite";
